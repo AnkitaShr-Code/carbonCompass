@@ -3,6 +3,8 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import { Navbar } from "../components/layout/Navbar";
 import { Footer } from "../components/layout/Footer";
+import { OnboardingWizard } from "../components/onboarding/OnboardingWizard";
+import { FloatingLogButton } from "../components/layout/FloatingLogButton";
 import "./globals.css";
 
 const inter = Inter({ 
@@ -33,6 +35,8 @@ export default function RootLayout({
         </main>
 
         <Footer />
+        <OnboardingWizard />
+        <FloatingLogButton />
       </body>
     </html>
   );

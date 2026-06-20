@@ -1,172 +1,298 @@
 "use client";
 
 import React, { useState, useRef, useEffect } from "react";
-import { ChatMessage } from "../../lib/types";
-import { Button } from "../ui/Button";
-import { Input } from "../ui/Input";
-import { Send, Trash2, Sparkles, User, Brain } from "lucide-react";
+import {
+  AssistantMessage,
+  WhatIfResult,
+  WHATIF_CONFIGS,
+} from "../../hooks/useAssistant";
+import { InsightResponse, GoalData } from "../../lib/types";
+import { InsightCard, WhatIfCard } from "./InsightCard";
+import { Send, Trash2, Brain, User, AlertTriangle, RefreshCw } from "lucide-react";
 
 interface ChatPanelProps {
-  messages: ChatMessage[];
+  messages: AssistantMessage[];
   isLoading: boolean;
   error: string | null;
-  onSendMessage: (text: string) => Promise<void>;
+  goals: GoalData | null;
+  onSendMessage: (text: string) => void;
+  onRunWhatIf: (configId: string) => void;
+  onCommit: (title: string) => void;
+  onUncommit: (title: string) => void;
   onClearChat: () => void;
+  onRetry: () => void;
+}
+
+const AI_CHIPS = [
+  "How can I reduce food emissions?",
+  "Compare me to the average",
+  "What was my best day this week?",
+];
+
+function isInsightResponse(val: unknown): val is InsightResponse {
+  return (
+    typeof val === "object" &&
+    val !== null &&
+    "summary" in val &&
+    "actions" in val
+  );
+}
+
+function isWhatIfResult(val: unknown): val is WhatIfResult {
+  return (
+    typeof val === "object" &&
+    val !== null &&
+    (val as WhatIfResult).type === "whatif"
+  );
 }
 
 export function ChatPanel({
   messages,
   isLoading,
   error,
+  goals,
   onSendMessage,
+  onRunWhatIf,
+  onCommit,
+  onUncommit,
   onClearChat,
+  onRetry,
 }: ChatPanelProps) {
   const [input, setInput] = useState("");
-  const messagesEndRef = useRef<HTMLDivElement>(null);
+  const bottomRef = useRef<HTMLDivElement>(null);
 
-  // Auto-scroll to latest message
+  const committedActions = goals?.committedActions ?? [];
+
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages, isLoading]);
+    bottomRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages, isLoading, error]);
 
   const handleSend = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!input.trim() || isLoading) return;
-    onSendMessage(input);
+    const trimmed = input.trim();
+    if (!trimmed || isLoading) return;
+    onSendMessage(trimmed);
     setInput("");
   };
 
-  const handleQuickPrompt = (prompt: string) => {
+  const handleChipSend = (text: string) => {
     if (isLoading) return;
-    onSendMessage(prompt);
+    onSendMessage(text);
   };
 
-  const quickPrompts = [
-    "How do I reduce my transportation emissions?",
-    "Give me 3 easy home energy saving tips",
-    "What is the carbon impact of a beef meal vs vegan?",
-    "Explain waste composting benefits",
-  ];
+  const lastMsg = messages[messages.length - 1];
+  const showChips =
+    !isLoading &&
+    !error &&
+    lastMsg?.role === "assistant" &&
+    messages.length > 0;
 
   return (
-    <div className="flex flex-col h-[600px] rounded-lg border border-gray-200 bg-white shadow-sm dark:border-gray-800 dark:bg-gray-900 overflow-hidden">
-      {/* Header */}
-      <div className="flex items-center justify-between px-4 py-3.5 border-b border-gray-200 dark:border-gray-800 bg-gray-50/50 dark:bg-gray-950/20">
-        <div className="flex items-center gap-2">
-          <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary-100 text-primary-800 dark:bg-primary-950/50 dark:text-primary-400">
-            <Brain className="h-5 w-5" />
+    <div className="flex flex-col h-[680px] rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 shadow-sm overflow-hidden">
+      {/* ── Header ── */}
+      <div className="flex items-center justify-between px-4 py-3 border-b border-gray-200 dark:border-gray-800 bg-gray-50/60 dark:bg-gray-950/30 shrink-0">
+        <div className="flex items-center gap-2.5">
+          <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-gradient-to-br from-emerald-400 to-emerald-600 text-white">
+            <Brain className="h-4.5 w-4.5" aria-hidden="true" />
           </div>
           <div>
-            <h4 className="text-sm font-bold text-gray-900 dark:text-white flex items-center gap-1.5">
-              Eco-Coach AI Assistant
-              <span className="flex h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse" />
+            <h4 className="text-sm font-bold text-gray-900 dark:text-white flex items-center gap-2">
+              CarbonCompass AI
+              <span
+                className="flex h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse"
+                aria-hidden="true"
+              />
             </h4>
-            <p className="text-[10px] text-gray-500 dark:text-gray-400">Powered by Gemini AI Engine</p>
+            <p className="text-[10px] text-gray-500 dark:text-gray-400">
+              Powered by Google Gemini · Data stays on your device
+            </p>
           </div>
         </div>
-        <Button
-          variant="ghost"
-          size="sm"
+        <button
           onClick={onClearChat}
-          className="text-gray-500 hover:text-red-600 dark:text-gray-400 dark:hover:text-red-400"
-          title="Clear Chat History"
+          title="Clear chat"
+          aria-label="Clear chat history"
+          className="rounded-lg p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-950/20 transition-colors cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-red-400"
         >
           <Trash2 className="h-4 w-4" />
-        </Button>
+        </button>
       </div>
 
-      {/* Messages */}
-      <div className="flex-1 overflow-y-auto p-4 space-y-4">
+      {/* ── Messages ── */}
+      <div className="flex-1 overflow-y-auto p-4 space-y-4 scroll-smooth">
+        {messages.length === 0 && !isLoading && (
+          <div className="flex flex-col items-center justify-center h-full text-center text-gray-400 gap-3 py-10">
+            <div className="h-14 w-14 rounded-2xl bg-gradient-to-br from-emerald-400 to-emerald-600 flex items-center justify-center text-white">
+              <Brain className="h-7 w-7" />
+            </div>
+            <p className="text-sm font-medium">Your AI coach is warming up…</p>
+          </div>
+        )}
+
         {messages.map((msg) => {
           const isAI = msg.role === "assistant";
+          const content = msg.content;
+
           return (
             <div
               key={msg.id}
-              className={`flex gap-3 max-w-[85%] ${
-                isAI ? "self-start" : "self-end flex-row-reverse ml-auto"
-              }`}
+              className={`flex gap-2.5 ${isAI ? "items-start" : "items-start flex-row-reverse ml-auto max-w-[80%]"}`}
             >
+              {/* Avatar */}
               <div
-                className={`flex h-8 w-8 shrink-0 select-none items-center justify-center rounded-full text-xs font-semibold ${
+                className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-xs font-semibold ${
                   isAI
-                    ? "bg-primary-100 text-primary-800 dark:bg-primary-900/50 dark:text-primary-300"
-                    : "bg-accent-100 text-accent-900 dark:bg-accent-900/50 dark:text-accent-300"
+                    ? "bg-emerald-100 text-emerald-800 dark:bg-emerald-900/50 dark:text-emerald-300"
+                    : "bg-blue-100 text-blue-800 dark:bg-blue-900/50 dark:text-blue-300"
                 }`}
+                aria-hidden="true"
               >
                 {isAI ? <Brain className="h-4 w-4" /> : <User className="h-4 w-4" />}
               </div>
-              <div
-                className={`rounded-lg px-3.5 py-2 text-sm leading-relaxed ${
-                  isAI
-                    ? "bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-200"
-                    : "bg-primary-800 text-white dark:bg-primary-500 dark:text-gray-950 font-medium"
-                }`}
-              >
-                {msg.content}
+
+              {/* Bubble */}
+              <div className={`max-w-xl ${isAI ? "w-full" : ""}`}>
+                {isAI ? (
+                  <>
+                    {isInsightResponse(content) ? (
+                      <InsightCard
+                        response={content}
+                        committedActions={committedActions}
+                        onCommit={onCommit}
+                        onUncommit={onUncommit}
+                      />
+                    ) : isWhatIfResult(content) ? (
+                      <WhatIfCard
+                        result={content}
+                        onCommit={onCommit}
+                        committedActions={committedActions}
+                      />
+                    ) : (
+                      <div className="rounded-xl rounded-tl-sm bg-gray-100 dark:bg-gray-800 px-3.5 py-2.5 text-sm text-gray-800 dark:text-gray-200 leading-relaxed">
+                        {String(content)}
+                      </div>
+                    )}
+                  </>
+                ) : (
+                  <div className="rounded-xl rounded-tr-sm bg-emerald-600 text-white px-3.5 py-2.5 text-sm leading-relaxed font-medium">
+                    {String(content)}
+                  </div>
+                )}
+                <p className="text-[9px] text-gray-400 mt-1 px-1">
+                  {new Date(msg.timestamp).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
+                </p>
               </div>
             </div>
           );
         })}
 
+        {/* Loading indicator */}
         {isLoading && (
-          <div className="flex gap-3 max-w-[80%] self-start">
-            <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-primary-100 text-primary-800 dark:bg-primary-900/50 dark:text-primary-300">
-              <Brain className="h-4 w-4" />
+          <div className="flex gap-2.5 items-start">
+            <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-emerald-100 text-emerald-800 dark:bg-emerald-900/50 dark:text-emerald-300">
+              <Brain className="h-4 w-4" aria-hidden="true" />
             </div>
-            <div className="rounded-lg bg-gray-100 px-3.5 py-2 text-sm dark:bg-gray-800 text-gray-500 dark:text-gray-400 flex items-center gap-1.5">
-              <span>Thinking</span>
-              <span className="flex gap-1">
-                <span className="w-1.5 h-1.5 rounded-full bg-gray-400 dark:bg-gray-600 animate-bounce" />
-                <span className="w-1.5 h-1.5 rounded-full bg-gray-400 dark:bg-gray-600 animate-bounce delay-150" />
-                <span className="w-1.5 h-1.5 rounded-full bg-gray-400 dark:bg-gray-600 animate-bounce delay-300" />
+            <div className="rounded-xl rounded-tl-sm bg-gray-100 dark:bg-gray-800 px-4 py-3 flex items-center gap-2">
+              <span className="text-xs text-gray-500 dark:text-gray-400">
+                CarbonCompass AI is analyzing your data
+              </span>
+              <span className="flex gap-1" aria-label="Loading">
+                {[0, 1, 2].map((i) => (
+                  <span
+                    key={i}
+                    className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-bounce"
+                    style={{ animationDelay: `${i * 150}ms` }}
+                  />
+                ))}
               </span>
             </div>
           </div>
         )}
 
+        {/* Error state */}
         {error && (
-          <div className="rounded-md bg-red-50 p-3 text-xs text-red-800 dark:bg-red-950/40 dark:text-red-300 self-center">
-            {error}
+          <div className="rounded-xl border border-amber-200 dark:border-amber-800/50 bg-amber-50 dark:bg-amber-950/20 p-3.5 text-xs text-amber-800 dark:text-amber-300 flex items-start justify-between gap-3">
+            <div className="flex gap-2 items-start">
+              <AlertTriangle className="h-4 w-4 shrink-0 mt-0.5" aria-hidden="true" />
+              <p className="leading-relaxed">{error}</p>
+            </div>
+            <button
+              onClick={onRetry}
+              className="flex items-center gap-1 shrink-0 text-[10px] font-bold text-amber-700 dark:text-amber-400 hover:underline cursor-pointer focus:outline-none"
+              aria-label="Retry last message"
+            >
+              <RefreshCw className="h-3 w-3" />
+              Try Again
+            </button>
           </div>
         )}
-        <div ref={messagesEndRef} />
+
+        <div ref={bottomRef} />
       </div>
 
-      {/* Quick suggestions tags */}
-      {messages.length <= 1 && !isLoading && (
-        <div className="px-4 py-2 bg-gray-50/50 dark:bg-gray-950/10 border-t border-gray-100 dark:border-gray-850">
-          <p className="text-[10px] uppercase font-bold text-gray-400 mb-1.5">Suggested Topics</p>
-          <div className="flex flex-wrap gap-1.5">
-            {quickPrompts.map((p, idx) => (
-              <button
-                key={idx}
-                onClick={() => handleQuickPrompt(p)}
-                className="text-xs bg-white border border-gray-200 text-gray-700 rounded-full px-3 py-1 hover:border-primary-500 hover:text-primary-800 dark:bg-gray-900 dark:border-gray-800 dark:text-gray-300 dark:hover:border-primary-400 dark:hover:text-primary-200 transition-colors cursor-pointer select-none"
-              >
-                {p}
-              </button>
-            ))}
+      {/* ── Suggestion chips (shown after last AI message) ── */}
+      {showChips && (
+        <div className="px-4 py-3 border-t border-gray-100 dark:border-gray-800 bg-gray-50/40 dark:bg-gray-950/20 space-y-2 shrink-0">
+          {/* Group 1: AI queries */}
+          <div>
+            <p className="text-[9px] uppercase font-bold text-gray-400 mb-1.5 tracking-wider">
+              Ask CarbonCompass AI
+            </p>
+            <div className="flex flex-wrap gap-1.5">
+              {AI_CHIPS.map((chip) => (
+                <button
+                  key={chip}
+                  onClick={() => handleChipSend(chip)}
+                  disabled={isLoading}
+                  className="text-[11px] font-medium bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-300 rounded-full px-3 py-1 hover:border-emerald-400 hover:text-emerald-700 dark:hover:border-emerald-600 dark:hover:text-emerald-400 transition-colors cursor-pointer select-none focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 disabled:opacity-50"
+                >
+                  {chip}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Group 2: What-If simulations */}
+          <div>
+            <p className="text-[9px] uppercase font-bold text-gray-400 mb-1.5 tracking-wider">
+              What-If Simulations (instant)
+            </p>
+            <div className="flex flex-wrap gap-1.5">
+              {WHATIF_CONFIGS.map((cfg) => (
+                <button
+                  key={cfg.id}
+                  onClick={() => onRunWhatIf(cfg.id)}
+                  disabled={isLoading}
+                  className="text-[11px] font-medium bg-blue-50 dark:bg-blue-950/20 border border-blue-200 dark:border-blue-800/60 text-blue-700 dark:text-blue-400 rounded-full px-3 py-1 hover:bg-blue-100 dark:hover:bg-blue-950/40 hover:border-blue-400 transition-colors cursor-pointer select-none focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 disabled:opacity-50"
+                >
+                  {cfg.emoji} {cfg.label}
+                </button>
+              ))}
+            </div>
           </div>
         </div>
       )}
 
+      {/* ── Input bar ── */}
       <form
         onSubmit={handleSend}
-        className="flex items-center gap-2 p-3 border-t border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900"
+        className="flex items-center gap-2 p-3 border-t border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 shrink-0"
       >
         <input
           type="text"
           value={input}
           onChange={(e) => setInput(e.target.value)}
-          placeholder="Ask about reducing emissions, diet comparison, energy audits..."
+          placeholder="Ask about your data, request simulations…"
           disabled={isLoading}
-          className="flex-1 flex h-10 w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm placeholder:text-gray-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 disabled:cursor-not-allowed disabled:opacity-50 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-100 dark:placeholder:text-gray-500 dark:focus-visible:ring-primary-500"
-          required
+          maxLength={500}
+          aria-label="Message input"
+          className="flex-1 h-10 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 px-3 py-2 text-sm text-gray-900 dark:text-gray-100 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
         />
         <button
           type="submit"
           disabled={isLoading || !input.trim()}
-          className="h-10 w-10 p-0 shrink-0 inline-flex items-center justify-center font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 select-none cursor-pointer bg-primary-800 hover:bg-primary-900 text-white dark:bg-primary-500 dark:hover:bg-primary-200 dark:hover:text-primary-900 focus-visible:ring-primary-500 rounded-md"
+          aria-label="Send message"
+          className="h-10 w-10 shrink-0 flex items-center justify-center rounded-lg bg-emerald-600 hover:bg-emerald-700 active:scale-95 text-white transition-all disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 focus-visible:ring-offset-2"
         >
           <Send className="h-4 w-4" />
         </button>

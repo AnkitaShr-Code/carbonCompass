@@ -14,7 +14,8 @@ import {
   calculateCO2e, 
   getElectricitySubtype 
 } from "../lib/carbonUtils";
-import { validateActivityInput } from "../lib/sanitize";
+import { validateActivityInput, sanitizeNumber } from "../lib/sanitize";
+import { EMISSION_FACTORS } from "../lib/emissionFactors";
 
 const DEFAULT_PROFILE: UserProfile = {
   name: "Eco Navigator",
@@ -53,6 +54,15 @@ export function useCarbonTracker() {
   const [goals, setGoals] = useState<GoalData>(DEFAULT_GOALS);
   const [isLoaded, setIsLoaded] = useState(false);
 
+  // Form logging states
+  const [currentStep, setCurrentStep] = useState(1);
+  const [selectedCategory, setSelectedCategory] = useState<'transport' | 'food' | 'energy' | 'shopping' | 'waste' | null>(null);
+  const [selectedSubtype, setSelectedSubtype] = useState<string | null>(null);
+  const [quantity, setQuantity] = useState<string>("");
+  const [formErrors, setFormErrors] = useState<string[]>([]);
+  const [co2ePreview, setCo2ePreview] = useState<number>(0);
+  const [lastLogged, setLastLogged] = useState<{ co2e: number; subtypeLabel: string } | null>(null);
+
   // Load storage states on client mount
   useEffect(() => {
     const loadedActs = getActivities();
@@ -64,6 +74,30 @@ export function useCarbonTracker() {
     setGoals(loadedGoals);
     setIsLoaded(true);
   }, []);
+
+  // Debounced live calculation of co2ePreview
+  useEffect(() => {
+    if (!selectedCategory || !selectedSubtype || !quantity) {
+      setCo2ePreview(0);
+      return;
+    }
+
+    const timer = setTimeout(() => {
+      const sanitized = sanitizeNumber(quantity, 0, 10000);
+      if (sanitized === null || sanitized <= 0) {
+        setCo2ePreview(0);
+        return;
+      }
+      try {
+        const preview = calculateCO2e(selectedCategory, selectedSubtype, sanitized);
+        setCo2ePreview(preview);
+      } catch (err) {
+        setCo2ePreview(0);
+      }
+    }, 300);
+
+    return () => clearTimeout(timer);
+  }, [quantity, selectedCategory, selectedSubtype]);
 
   const addActivity = useCallback((
     activityInput: Omit<ActivityEntry, "id" | "timestamp" | "co2e" | "unit">
@@ -123,6 +157,117 @@ export function useCarbonTracker() {
     saveGoals(newGoals);
   }, []);
 
+  // Form Step Handlers
+  const goNext = useCallback(() => {
+    setFormErrors([]);
+    if (currentStep === 1) {
+      if (!selectedCategory) {
+        setFormErrors(["Please select a category to proceed."]);
+        return;
+      }
+      setCurrentStep(2);
+    } else if (currentStep === 2) {
+      if (!selectedSubtype) {
+        setFormErrors(["Please select a subtype to proceed."]);
+        return;
+      }
+      setCurrentStep(3);
+    }
+  }, [currentStep, selectedCategory, selectedSubtype]);
+
+  const goBack = useCallback(() => {
+    setFormErrors([]);
+    if (currentStep > 1) {
+      setCurrentStep((prev) => prev - 1);
+    }
+  }, [currentStep]);
+
+  const setFormCategory = useCallback((cat: 'transport' | 'food' | 'energy' | 'shopping' | 'waste' | null) => {
+    setSelectedCategory(cat);
+    setSelectedSubtype(null);
+    setQuantity("");
+    setFormErrors([]);
+    if (cat) {
+      setCurrentStep(2);
+    }
+  }, []);
+
+  const setFormSubtype = useCallback((sub: string | null) => {
+    setSelectedSubtype(sub);
+    setQuantity("");
+    setFormErrors([]);
+    if (sub) {
+      setCurrentStep(3);
+    }
+  }, []);
+
+  const submitActivity = useCallback(() => {
+    setFormErrors([]);
+    if (!selectedCategory || !selectedSubtype) {
+      setFormErrors(["Form is incomplete."]);
+      return false;
+    }
+
+    const sanitizedQty = sanitizeNumber(quantity, 0, 10000);
+    if (sanitizedQty === null || sanitizedQty <= 0) {
+      setFormErrors(["Quantity must be greater than 0 and at most 10000."]);
+      return false;
+    }
+
+    const rawInput = {
+      timestamp: new Date().toISOString(),
+      category: selectedCategory,
+      subtype: selectedSubtype,
+      quantity: sanitizedQty,
+    };
+
+    const validation = validateActivityInput(rawInput);
+    if (!validation.valid || !validation.sanitized) {
+      setFormErrors(validation.errors);
+      return false;
+    }
+
+    const newEntry: ActivityEntry = {
+      id: typeof crypto !== "undefined" && typeof crypto.randomUUID === "function" 
+          ? crypto.randomUUID() 
+          : Math.random().toString(36).substring(2, 11),
+      timestamp: validation.sanitized.timestamp!,
+      category: validation.sanitized.category!,
+      subtype: validation.sanitized.subtype!,
+      quantity: validation.sanitized.quantity!,
+      unit: validation.sanitized.unit!,
+      co2e: validation.sanitized.co2e!,
+    };
+
+    const factorInfo = (EMISSION_FACTORS as any)[selectedCategory][selectedSubtype];
+    setLastLogged({
+      co2e: newEntry.co2e,
+      subtypeLabel: factorInfo?.label || selectedSubtype,
+    });
+
+    const updated = [newEntry, ...activities];
+    setActivities(updated);
+    saveActivities(updated);
+
+    setSelectedCategory(null);
+    setSelectedSubtype(null);
+    setQuantity("");
+    setCo2ePreview(0);
+    setFormErrors([]);
+    setCurrentStep(4);
+    return true;
+  }, [activities, selectedCategory, selectedSubtype, quantity]);
+
+  const resetForm = useCallback(() => {
+    setSelectedCategory(null);
+    setSelectedSubtype(null);
+    setQuantity("");
+    setFormErrors([]);
+    setCo2ePreview(0);
+    setLastLogged(null);
+    setCurrentStep(1);
+  }, []);
+
   return {
     activities,
     profile,
@@ -133,5 +278,21 @@ export function useCarbonTracker() {
     clearAllActivities,
     updateProfile,
     updateGoals,
+
+    // Form settings
+    currentStep,
+    selectedCategory,
+    selectedSubtype,
+    quantity,
+    formErrors,
+    co2ePreview,
+    lastLogged,
+    setQuantity,
+    setFormCategory,
+    setFormSubtype,
+    goNext,
+    goBack,
+    submitActivity,
+    resetForm,
   };
 }

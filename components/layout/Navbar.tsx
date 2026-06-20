@@ -69,6 +69,7 @@ export function Navbar() {
                 <Link
                   key={item.href}
                   href={item.href}
+                  {...(item.name === "Insights" ? { "data-tour": "nav-insights" } : {})}
                   className={`flex items-center space-x-1.5 rounded-md px-3.5 py-2 text-sm font-semibold transition-all ${
                     isActive
                       ? "bg-primary-50 text-primary-800 dark:bg-primary-900/40 dark:text-primary-200"
