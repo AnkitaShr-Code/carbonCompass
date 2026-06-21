@@ -25,6 +25,7 @@ import {
   BADGES,
 } from "../../lib/badgeUtils";
 import { getActivities, getGoals, saveGoals } from "../../lib/storage";
+import { sanitizeNumber } from "../../lib/sanitize";
 import { DAILY_BUDGET_1_5C } from "../../lib/emissionFactors";
 import { getTotalForPeriod } from "../../lib/carbonUtils";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "../../components/ui/Card";
@@ -423,13 +424,16 @@ export default function GoalsPage() {
 
   const handleTargetChange = useCallback(
     (newTarget: number) => {
-      setWeeklyTarget(newTarget);
+      // Clamp to valid range before persisting
+      const safe = sanitizeNumber(newTarget, 1, 500);
+      if (safe === null) return;
+      setWeeklyTarget(safe);
       const current = goals ?? {
-        weeklyTargetKg: newTarget,
+        weeklyTargetKg: safe,
         committedActions: [],
         badges: [],
       };
-      const updated: GoalData = { ...current, weeklyTargetKg: newTarget };
+      const updated: GoalData = { ...current, weeklyTargetKg: safe };
       saveGoals(updated);
       setGoals(updated);
     },

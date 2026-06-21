@@ -86,16 +86,30 @@ const NO_KEY_RESPONSE: InsightResponse = {
 
 // ─── Handler ──────────────────────────────────────────────────────────────────
 
+// Reject any non-POST methods with 405 Method Not Allowed
+export async function GET() {
+  return NextResponse.json({ error: "Method Not Allowed" }, { status: 405 });
+}
+
 export async function POST(req: NextRequest) {
-  // Validate Content-Type
+  // ── Content-Type guard (415 Unsupported Media Type) ────────────────────────
   const contentType = req.headers.get("content-type") ?? "";
   if (!contentType.includes("application/json")) {
-    return NextResponse.json({ error: "Invalid request" }, { status: 400 });
+    return NextResponse.json(
+      { error: "Unsupported Media Type — application/json required" },
+      { status: 415 }
+    );
+  }
+
+  // ── Body size guard (413 Payload Too Large) ─────────────────────────────────
+  const rawBody = await req.text();
+  if (rawBody.length > 10 * 1024) {
+    return NextResponse.json({ error: "Payload Too Large" }, { status: 413 });
   }
 
   let body: { message?: unknown; context?: unknown };
   try {
-    body = await req.json();
+    body = JSON.parse(rawBody);
   } catch {
     return NextResponse.json({ error: "Invalid request" }, { status: 400 });
   }
@@ -122,7 +136,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json(NO_KEY_RESPONSE, { status: 200 });
   }
 
-  // Production: add rate limiting (e.g., Upstash ratelimit or next-rate-limit)
+  // Production: add rate limiting middleware (e.g., Upstash @upstash/ratelimit)
   try {
     // ── Step 3: Pre-calculate all numbers deterministically ────────────────
     const now = new Date();

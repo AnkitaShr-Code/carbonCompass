@@ -165,17 +165,6 @@ export function OnboardingWizard() {
 
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center bg-gray-950/80 p-4 backdrop-blur-sm animate-fade-in">
-      {/* Styles for Earth Animation */}
-      <style dangerouslySetInnerHTML={{ __html: `
-        @keyframes spin-earth {
-          from { transform: rotate(0deg); }
-          to { transform: rotate(360deg); }
-        }
-        .animate-spin-earth {
-          animation: spin-earth 30s linear infinite;
-        }
-      `}} />
-
       <div
         ref={modalRef}
         role="dialog"
