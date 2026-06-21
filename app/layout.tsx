@@ -1,9 +1,14 @@
 import React from "react";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
+import dynamic from "next/dynamic";
 import { Navbar } from "../components/layout/Navbar";
 import { Footer } from "../components/layout/Footer";
-import { OnboardingWizard } from "../components/onboarding/OnboardingWizard";
+
+const OnboardingWizard = dynamic(
+  () => import("../components/onboarding/OnboardingWizard").then((mod) => mod.OnboardingWizard),
+  { ssr: false }
+);
 import { FloatingLogButton } from "../components/layout/FloatingLogButton";
 import "./globals.css";
 

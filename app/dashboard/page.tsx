@@ -28,7 +28,7 @@ import {
   getCompassScore,
 } from "../../lib/carbonUtils";
 import { DAILY_BUDGET_1_5C } from "../../lib/emissionFactors";
-import { saveActivities, saveProfile, saveGoals, getActivities } from "../../lib/storage";
+import { saveActivities, saveProfile, saveGoals } from "../../lib/storage";
 import { MOCK_ACTIVITIES, MOCK_PROFILE, MOCK_GOALS } from "../../lib/mockData";
 import {
   Category,
@@ -55,20 +55,33 @@ export default function DashboardPage() {
 
   // Show banner when no activities OR no profile setup
   const showBanner = isLoaded && (activities.length === 0 || !profile.setupComplete);
-
-  const now = new Date();
-  const todayStart = new Date(now); todayStart.setHours(0, 0, 0, 0);
-  const todayEnd = new Date(now); todayEnd.setHours(23, 59, 59, 999);
-  const weekStart = new Date(now); weekStart.setDate(now.getDate() - 6); weekStart.setHours(0, 0, 0, 0);
-  const monthStart = new Date(now); monthStart.setDate(1); monthStart.setHours(0, 0, 0, 0);
-  const farFuture = new Date(now.getTime() + 5 * 365 * 24 * 3600 * 1000);
-
   // Memoized stats calculations
-  const { todayKg, weekKg, monthKg, weekCatBreakdown, biggestCatName, biggestCatVal, streak, compassScore, budgetDiff, budgetIsGood } = useMemo(() => {
+  const {
+    todayKg,
+    weekKg,
+    monthKg,
+    weekCatBreakdown,
+    biggestCatName,
+    biggestCatVal,
+    streak,
+    compassScore,
+    budgetDiff,
+    budgetIsGood,
+    weekStart,
+    farFuture,
+    now,
+  } = useMemo(() => {
+    const currentNow = new Date();
+    const todayStart = new Date(currentNow); todayStart.setHours(0, 0, 0, 0);
+    const todayEnd = new Date(currentNow); todayEnd.setHours(23, 59, 59, 999);
+    const wStart = new Date(currentNow); wStart.setDate(currentNow.getDate() - 6); wStart.setHours(0, 0, 0, 0);
+    const mStart = new Date(currentNow); mStart.setDate(1); mStart.setHours(0, 0, 0, 0);
+    const fFuture = new Date(currentNow.getTime() + 5 * 365 * 24 * 3600 * 1000);
+
     const today = getTotalForPeriod(activities, todayStart, todayEnd);
-    const week = getTotalForPeriod(activities, weekStart, farFuture);
-    const month = getTotalForPeriod(activities, monthStart, farFuture);
-    const breakdown = getCategoryBreakdown(activities, weekStart, farFuture);
+    const week = getTotalForPeriod(activities, wStart, fFuture);
+    const month = getTotalForPeriod(activities, mStart, fFuture);
+    const breakdown = getCategoryBreakdown(activities, wStart, fFuture);
 
     const biggest = Object.entries(breakdown).sort((a, b) => b[1] - a[1])[0];
     const biggestName = biggest ? biggest[0] : null;
@@ -91,6 +104,9 @@ export default function DashboardPage() {
       compassScore: score,
       budgetDiff: diff,
       budgetIsGood: isGood,
+      weekStart: wStart,
+      farFuture: fFuture,
+      now: currentNow,
     };
   }, [activities, demoLoaded]);
 
@@ -105,9 +121,9 @@ export default function DashboardPage() {
 
   // After demo data loads, trigger tour on next render
   useEffect(() => {
-    if (typeof window === "undefined") return;
+    if (typeof window === "undefined" || !isLoaded) return;
     // If we just reloaded after demo seed and activities are present, flag showTour
-    const hasData = getActivities().length > 0;
+    const hasData = activities.length > 0;
     let tourDone: string | null = null;
     try {
       tourDone = localStorage.getItem("carboncompass_tour_done");
@@ -117,7 +133,7 @@ export default function DashboardPage() {
     if (hasData && !tourDone) {
       setShowTour(true);
     }
-  }, [isLoaded]);
+  }, [isLoaded, activities]);
 
   if (!isLoaded) {
     return (

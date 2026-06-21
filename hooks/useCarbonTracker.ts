@@ -82,6 +82,25 @@ export function useCarbonTracker() {
     setIsLoaded(true);
   }, []);
 
+  // Memoized function to calculate CO2e preview
+  const calculatePreview = useCallback((cat: 'transport' | 'food' | 'energy' | 'shopping' | 'waste' | null, sub: string | null, qty: string) => {
+    if (!cat || !sub || !qty) {
+      setCo2ePreview(0);
+      return;
+    }
+    const sanitized = sanitizeNumber(qty, APP_CONSTANTS.MIN_ACTIVITY_QUANTITY, APP_CONSTANTS.MAX_ACTIVITY_QUANTITY);
+    if (sanitized === null || sanitized <= 0) {
+      setCo2ePreview(0);
+      return;
+    }
+    try {
+      const preview = calculateCO2e(cat, sub, sanitized);
+      setCo2ePreview(preview);
+    } catch (err) {
+      setCo2ePreview(0);
+    }
+  }, []);
+
   // Debounced live calculation of co2ePreview
   useEffect(() => {
     if (!selectedCategory || !selectedSubtype || !quantity) {
@@ -90,21 +109,11 @@ export function useCarbonTracker() {
     }
 
     const timer = setTimeout(() => {
-      const sanitized = sanitizeNumber(quantity, APP_CONSTANTS.MIN_ACTIVITY_QUANTITY, APP_CONSTANTS.MAX_ACTIVITY_QUANTITY);
-      if (sanitized === null || sanitized <= 0) {
-        setCo2ePreview(0);
-        return;
-      }
-      try {
-        const preview = calculateCO2e(selectedCategory, selectedSubtype, sanitized);
-        setCo2ePreview(preview);
-      } catch (err) {
-        setCo2ePreview(0);
-      }
+      calculatePreview(selectedCategory, selectedSubtype, quantity);
     }, APP_CONSTANTS.DEBOUNCE_DELAY_MS);
 
     return () => clearTimeout(timer);
-  }, [quantity, selectedCategory, selectedSubtype]);
+  }, [quantity, selectedCategory, selectedSubtype, calculatePreview]);
 
   const addActivity = useCallback((
     activityInput: Omit<ActivityEntry, "id" | "timestamp" | "co2e" | "unit">

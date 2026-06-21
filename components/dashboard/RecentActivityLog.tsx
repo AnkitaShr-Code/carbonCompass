@@ -57,7 +57,7 @@ interface RecentActivityLogProps {
   deleteActivity: (id: string) => void;
 }
 
-export function RecentActivityLog({
+export const RecentActivityLog = React.memo(function RecentActivityLog({
   activities,
   deleteActivity,
 }: RecentActivityLogProps) {
@@ -209,4 +209,4 @@ export function RecentActivityLog({
       </CardContent>
     </Card>
   );
-}
+});
