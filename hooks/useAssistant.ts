@@ -170,6 +170,12 @@ function persistMessages(msgs: AssistantMessage[]) {
 
 // ─── Hook ─────────────────────────────────────────────────────────────────────
 
+/**
+ * Hook to manage AI assistant state and interactions, including chat history,
+ * context building, and API calls to the Insights endpoint.
+ *
+ * @returns State and functions to interact with the AI assistant.
+ */
 export function useAssistant() {
   const [messages, setMessages] = useState<AssistantMessage[]>([]);
   const [isLoading, setIsLoading] = useState(false);

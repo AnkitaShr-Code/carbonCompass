@@ -16,6 +16,7 @@ import {
 } from "../lib/carbonUtils";
 import { validateActivityInput, sanitizeNumber } from "../lib/sanitize";
 import { EMISSION_FACTORS } from "../lib/emissionFactors";
+import { APP_CONSTANTS } from "../lib/constants";
 
 const DEFAULT_PROFILE: UserProfile = {
   name: "Eco Navigator",
@@ -48,6 +49,12 @@ const DEFAULT_GOALS: GoalData = {
   ],
 };
 
+/**
+ * Hook to manage the global state of the CarbonTracker, including activities,
+ * goals, and profile data. Also handles activity validation and persistence.
+ *
+ * @returns CarbonTracker state and mutation methods.
+ */
 export function useCarbonTracker() {
   const [activities, setActivities] = useState<ActivityEntry[]>([]);
   const [profile, setProfile] = useState<UserProfile>(DEFAULT_PROFILE);
@@ -83,7 +90,7 @@ export function useCarbonTracker() {
     }
 
     const timer = setTimeout(() => {
-      const sanitized = sanitizeNumber(quantity, 0, 10000);
+      const sanitized = sanitizeNumber(quantity, APP_CONSTANTS.MIN_ACTIVITY_QUANTITY, APP_CONSTANTS.MAX_ACTIVITY_QUANTITY);
       if (sanitized === null || sanitized <= 0) {
         setCo2ePreview(0);
         return;
@@ -94,7 +101,7 @@ export function useCarbonTracker() {
       } catch (err) {
         setCo2ePreview(0);
       }
-    }, 300);
+    }, APP_CONSTANTS.DEBOUNCE_DELAY_MS);
 
     return () => clearTimeout(timer);
   }, [quantity, selectedCategory, selectedSubtype]);
@@ -208,9 +215,9 @@ export function useCarbonTracker() {
       return false;
     }
 
-    const sanitizedQty = sanitizeNumber(quantity, 0, 10000);
+    const sanitizedQty = sanitizeNumber(quantity, APP_CONSTANTS.MIN_ACTIVITY_QUANTITY, APP_CONSTANTS.MAX_ACTIVITY_QUANTITY);
     if (sanitizedQty === null || sanitizedQty <= 0) {
-      setFormErrors(["Quantity must be greater than 0 and at most 10000."]);
+      setFormErrors([`Quantity must be greater than ${APP_CONSTANTS.MIN_ACTIVITY_QUANTITY} and at most ${APP_CONSTANTS.MAX_ACTIVITY_QUANTITY}.`]);
       return false;
     }
 

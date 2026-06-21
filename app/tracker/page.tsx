@@ -4,6 +4,7 @@ import React, { useTransition } from "react";
 import { useCarbonTracker } from "../../hooks/useCarbonTracker";
 import { EMISSION_FACTORS } from "../../lib/emissionFactors";
 import { getEquivalences } from "../../lib/carbonUtils";
+import { APP_CONSTANTS } from "../../lib/constants";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "../../components/ui/Card";
 import { Button } from "../../components/ui/Button";
 import { 
@@ -76,7 +77,7 @@ export default function TrackerPage() {
 
   // Perform validation checks for display
   const qtyNum = parseFloat(quantity);
-  const isInputInvalid = quantity !== "" && (isNaN(qtyNum) || qtyNum <= 0 || qtyNum > 10000);
+  const isInputInvalid = quantity !== "" && (isNaN(qtyNum) || qtyNum <= APP_CONSTANTS.MIN_ACTIVITY_QUANTITY || qtyNum > APP_CONSTANTS.MAX_ACTIVITY_QUANTITY);
 
   const handleCategoryCardClick = (key: 'transport' | 'food' | 'energy' | 'shopping' | 'waste') => {
     startTransition(() => {
@@ -242,7 +243,7 @@ export default function TrackerPage() {
                     {isInputInvalid && (
                       <div className="flex items-center gap-1 text-xs text-red-650 dark:text-red-400 mt-1.5 font-bold">
                         <AlertTriangle className="h-4 w-4 shrink-0" />
-                        <span>Quantity must be greater than 0 and at most 10,000.</span>
+                        <span>Quantity must be greater than {APP_CONSTANTS.MIN_ACTIVITY_QUANTITY} and at most {APP_CONSTANTS.MAX_ACTIVITY_QUANTITY.toLocaleString()}.</span>
                       </div>
                     )}
                   </div>

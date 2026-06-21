@@ -1,5 +1,6 @@
 import { EMISSION_FACTORS } from "./emissionFactors";
 import { ActivityEntry } from "./types";
+import { APP_CONSTANTS } from "./constants";
 
 /**
  * Strips basic HTML tags, trims, and truncates a string to a max length.
@@ -86,9 +87,9 @@ export function validateActivityInput(input: unknown): {
   }
 
   // 4. Verify Quantity rules
-  const quantity = sanitizeNumber(data.quantity, -Infinity, 1000000);
-  if (quantity === null || quantity <= 0) {
-    errors.push("quantity must be greater than 0");
+  const quantity = sanitizeNumber(data.quantity, APP_CONSTANTS.MIN_ACTIVITY_QUANTITY, APP_CONSTANTS.MAX_ACTIVITY_QUANTITY);
+  if (quantity === null || quantity <= APP_CONSTANTS.MIN_ACTIVITY_QUANTITY) {
+    errors.push(`quantity must be greater than ${APP_CONSTANTS.MIN_ACTIVITY_QUANTITY}`);
   }
 
   const valid = errors.length === 0;
