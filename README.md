@@ -2,6 +2,12 @@
 
 > Navigate your path to lower emissions.
 
+## Live Demo
+
+🌐 [https://carboncompass-851221075870.asia-south1.run.app](https://carboncompass-851221075870.asia-south1.run.app)
+
+Click "Load Demo Data" to experience the full platform instantly.
+
 CarbonCompass is an AI-powered sustainability coach that helps users understand, track, and reduce their carbon footprint through personalized recommendations and actionable insights.
 
 ## Chosen vertical
@@ -62,6 +68,8 @@ graph TD
 - **Interactive dashboard**: Custom zero-dependency SVG charts with hover tooltips, keyboard navigation, ARIA labels, and animated stat cards
 - **Demo mode**: One-click "Load Demo Data" seeds 14 days of realistic activities so reviewers experience the full platform instantly
 - **Goals & achievements**: Weekly CO₂e reduction targets, 6 unlockable badges, streak counter
+- **Daily Carbon Insights**: 30 rotating educational tips with real data from IPCC, UNEP, and Our World in Data — a new tip each day with actionable suggestions
+- **Editable location**: users can change their country from the profile page, which recalculates electricity emission factors and updates the CarbonCompass Score in real time
 
 ## Why AI?
 
@@ -120,6 +128,7 @@ npm run build
 3. **Static emission factors**: CO₂e factors are hardcoded from DEFRA 2023 and IPCC AR6. A production version would fetch updated factors from a live API for regional and seasonal accuracy.
 4. **Estimation accuracy**: Calculations are estimates for awareness purposes, not certified carbon accounting. The goal is directional accuracy that drives daily behavior change.
 5. **Single-user scope**: Designed for individual use. Multi-user social features, carbon offset marketplace, and data sync are planned as future iterations.
+6. **Next.js version stability**: Next.js is pinned to 14.2.x for App Router stability. Remaining npm audit advisories relate to image optimization and i18n middleware features not used by this application. A production release would upgrade to Next.js 16.x with full regression testing.
 
 ## Data sources
 

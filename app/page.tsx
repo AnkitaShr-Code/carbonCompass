@@ -24,7 +24,6 @@ export default function HomePage() {
         {/* Animated Badge */}
         <div className="inline-flex items-center gap-1.5 rounded-full bg-primary-100/80 px-3.5 py-1.5 text-xs font-semibold text-primary-800 dark:bg-primary-950/50 dark:text-primary-300 backdrop-blur-sm ring-1 ring-primary-900/10 dark:ring-primary-500/20 select-none animate-fade-in">
           <span className="flex h-2 w-2 rounded-full bg-primary-500" />
-          Hackathon Edition Live
         </div>
 
         {/* Hero Headline */}

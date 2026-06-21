@@ -36,6 +36,12 @@ describe("CarbonCompass Data Layer — carbonUtils Tests", () => {
       expect(result).toBe(82.0);
     });
 
+    it("should calculate correct energy electricity_uk emissions", () => {
+      // ('energy', 'electricity_uk', 100) -> expect 23.3
+      const result = calculateCO2e("energy", "electricity_uk", 100);
+      expect(result).toBe(23.3);
+    });
+
     it("should throw 'quantity must be greater than 0' for quantity of 0", () => {
       expect(() => calculateCO2e("transport", "car_petrol", 0)).toThrow(
         "quantity must be greater than 0"

@@ -207,7 +207,7 @@ Return exactly 3 actions ranked by estimatedSavingKg descending. Do NOT wrap in 
 
     const userContent = `User message: ${message}\n\nUser data summary:\n${JSON.stringify(dataSummary, null, 2)}`;
 
-    // ── Step 5: Call Gemini 2.0 Flash with JSON mode (SDK 0.24.x+) ──────────
+    // ── Step 5: Call Gemini 2.5 Flash with JSON mode (SDK 0.24.x+) ──────────
     const genAI = new GoogleGenerativeAI(apiKey);
     const model = genAI.getGenerativeModel({
       model: "gemini-2.5-flash",
