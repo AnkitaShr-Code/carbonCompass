@@ -1,6 +1,7 @@
 import React from "react";
 import Link from "next/link";
 import { ArrowRight, Activity, Sparkles, Target, Compass } from "lucide-react";
+import { DailyTipCard } from "../components/ui/DailyTipCard";
 
 export default function HomePage() {
   return (
@@ -55,6 +56,11 @@ export default function HomePage() {
           >
             View Dashboard
           </Link>
+        </div>
+
+        {/* Daily Carbon Insight preview/teaser */}
+        <div className="max-w-md mx-auto pt-4">
+          <DailyTipCard variant="small" />
         </div>
       </div>
 

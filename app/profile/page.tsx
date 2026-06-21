@@ -1,15 +1,27 @@
 "use client";
 
-import React from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { useCarbonTracker } from "../../hooks/useCarbonTracker";
-import { getCompassScore } from "../../lib/carbonUtils";
+import { getCompassScore, getElectricitySubtype, calculateCO2e } from "../../lib/carbonUtils";
+import { EMISSION_FACTORS } from "../../lib/emissionFactors";
+import { sanitizeString } from "../../lib/sanitize";
 import { STORAGE_KEYS } from "../../lib/storage";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "../../components/ui/Card";
 import { Button } from "../../components/ui/Button";
-import { User, Globe, Activity, Award, RefreshCw } from "lucide-react";
+import { User, Globe, Activity, Award, RefreshCw, CheckCircle } from "lucide-react";
 
 export default function ProfilePage() {
-  const { profile, activities, isLoaded } = useCarbonTracker();
+  const { profile, activities, isLoaded, updateProfile, updateActivities } = useCarbonTracker();
+  const [toastMsg, setToastMsg] = useState<string | null>(null);
+  const toastTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+  useEffect(() => {
+    return () => {
+      if (toastTimeoutRef.current) {
+        clearTimeout(toastTimeoutRef.current);
+      }
+    };
+  }, []);
 
   if (!isLoaded) {
     return (
@@ -82,12 +94,61 @@ export default function ProfilePage() {
     }
   };
 
-  const countryLabels: Record<string, string> = {
-    usa: "United States",
-    uk: "United Kingdom",
-    india: "India",
-    germany: "Germany",
-    australia: "Australia",
+  const handleCountryChange = (newCountry: string) => {
+    // 1. Sanitize input before saving
+    const sanitized = sanitizeString(newCountry, 30).toLowerCase();
+    const validCountries = ["india", "uk", "usa", "germany", "australia"];
+    if (!validCountries.includes(sanitized)) {
+      return;
+    }
+
+    const countryVal = sanitized as "india" | "uk" | "usa" | "germany" | "australia";
+
+    // 2. Remap electricity activities strictly by subtype prefix "electricity_" and recalculate CO2e
+    const updatedActivities = activities.map((act) => {
+      if (act.category === "energy" && act.subtype.startsWith("electricity_")) {
+        const newSubtype = getElectricitySubtype(countryVal);
+        try {
+          const recalculatedCo2e = calculateCO2e("energy", newSubtype, act.quantity);
+          const factorInfo = EMISSION_FACTORS.energy[newSubtype];
+          return {
+            ...act,
+            subtype: newSubtype,
+            unit: factorInfo.unit,
+            co2e: recalculatedCo2e,
+          };
+        } catch (err) {
+          console.error("Recalculation failed for activity:", act.id, err);
+        }
+      }
+      return act;
+    });
+
+    // 3. Save profile and activities
+    const updatedProfile = {
+      ...profile,
+      country: countryVal,
+    };
+    updateProfile(updatedProfile);
+    updateActivities(updatedActivities);
+
+    // 4. Show confirmation toast
+    const countryLabelsMap: Record<string, string> = {
+      usa: "United States",
+      uk: "United Kingdom",
+      india: "India",
+      germany: "Germany",
+      australia: "Australia",
+    };
+    const displayCountry = countryLabelsMap[countryVal] || countryVal;
+    setToastMsg(`Location updated to ${displayCountry}`);
+
+    if (toastTimeoutRef.current) {
+      clearTimeout(toastTimeoutRef.current);
+    }
+    toastTimeoutRef.current = setTimeout(() => {
+      setToastMsg(null);
+    }, 4000);
   };
 
   const lifestyleLabels: Record<string, string> = {
@@ -97,7 +158,19 @@ export default function ProfilePage() {
   };
 
   return (
-    <div className="max-w-2xl mx-auto space-y-6 animate-fade-in">
+    <div className="max-w-2xl mx-auto space-y-6 animate-fade-in relative">
+      {/* Confirmation Toast Notification */}
+      {toastMsg && (
+        <div 
+          role="status"
+          aria-live="polite"
+          className="fixed bottom-5 right-5 z-50 flex items-center gap-2.5 bg-emerald-600 dark:bg-emerald-500 text-white px-4 py-3 rounded-lg shadow-xl animate-slide-up-fade-in text-sm font-semibold border border-emerald-500/10"
+        >
+          <CheckCircle className="h-5 w-5 text-emerald-100" />
+          <span>{toastMsg}</span>
+        </div>
+      )}
+
       <div>
         <h2 className="text-2xl font-extrabold tracking-tight text-gray-900 dark:text-white sm:text-3xl">
           User Settings & Profile
@@ -122,12 +195,27 @@ export default function ProfilePage() {
               <p className="text-sm font-bold text-gray-900 dark:text-white">{profile.name}</p>
             </div>
 
-            <div className="space-y-1 bg-gray-50 dark:bg-gray-800/30 p-3 rounded-lg border border-gray-100 dark:border-gray-800">
-              <span className="text-[10px] uppercase font-bold text-gray-450 flex items-center gap-1">
+            <div className="space-y-1.5 bg-gray-50 dark:bg-gray-800/30 p-3 rounded-lg border border-gray-100 dark:border-gray-800 flex flex-col justify-center">
+              <label 
+                htmlFor="profile-country" 
+                className="text-[10px] uppercase font-bold text-gray-455 flex items-center gap-1 cursor-pointer"
+              >
                 <Globe className="h-3.5 w-3.5 text-blue-500" /> Country / Region
-              </span>
-              <p className="text-sm font-bold text-gray-900 dark:text-white capitalize">
-                {countryLabels[profile.country] || profile.country}
+              </label>
+              <select
+                id="profile-country"
+                value={profile.country}
+                onChange={(e) => handleCountryChange(e.target.value)}
+                className="mt-1 block w-full rounded-md border border-gray-300 bg-white dark:bg-gray-800 dark:border-gray-700 dark:text-gray-100 px-2 py-1.5 text-sm font-bold focus:outline-none focus:ring-2 focus:ring-emerald-600 focus:ring-offset-2 focus:ring-offset-white dark:focus:ring-offset-gray-900 cursor-pointer"
+              >
+                <option value="india">🇮🇳 India</option>
+                <option value="uk">🇬🇧 United Kingdom</option>
+                <option value="usa">🇺🇸 United States</option>
+                <option value="germany">🇩🇪 Germany</option>
+                <option value="australia">🇦🇺 Australia</option>
+              </select>
+              <p className="text-[10px] text-gray-500 dark:text-gray-400 leading-normal mt-1">
+                Changing your location updates electricity emission factors and adjusts AI recommendations to your region.
               </p>
             </div>
 

@@ -159,6 +159,11 @@ export function useCarbonTracker() {
     saveProfile(newProfile);
   }, []);
 
+  const updateActivities = useCallback((newActivities: ActivityEntry[]) => {
+    setActivities(newActivities);
+    saveActivities(newActivities);
+  }, []);
+
   const updateGoals = useCallback((newGoals: GoalData) => {
     setGoals(newGoals);
     saveGoals(newGoals);
@@ -284,6 +289,7 @@ export function useCarbonTracker() {
     deleteActivity,
     clearAllActivities,
     updateProfile,
+    updateActivities,
     updateGoals,
 
     // Form settings

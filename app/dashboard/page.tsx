@@ -9,6 +9,7 @@ import { StatCard } from "../../components/dashboard/StatCard";
 import { CompassScoreCard } from "../../components/dashboard/CompassScoreCard";
 import { DemoBanner } from "../../components/dashboard/DemoBanner";
 import { GuidedTour } from "../../components/onboarding/GuidedTour";
+import { DailyTipCard } from "../../components/ui/DailyTipCard";
 import {
   getTotalForPeriod,
   getCategoryBreakdown,
@@ -370,6 +371,9 @@ export default function DashboardPage() {
         </h2>
         <EquivalenceCards weeklyKg={weekKg} />
       </div>
+
+      {/* ── Row 4b: Daily Carbon Insight ── */}
+      <DailyTipCard />
 
       {/* ── Row 5: Recent Activity List ── */}
       <Card>
