@@ -104,7 +104,7 @@ function getHighlightRect(selector: string): HighlightRect | null {
   };
 }
 
-export function GuidedTour() {
+export const GuidedTour = React.memo(function GuidedTour() {
   const [step, setStep] = useState(0);
   const [visible, setVisible] = useState(false);
   const [pos, setPos] = useState<TooltipPosition | null>(null);
@@ -263,4 +263,4 @@ export function GuidedTour() {
       `}</style>
     </>
   );
-}
+});

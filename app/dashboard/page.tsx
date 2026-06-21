@@ -394,9 +394,11 @@ export default function DashboardPage() {
   }, [activities, demoLoaded]);
 
   // Activity list (last 15, filtered)
-  const filteredActivities = activities
-    .filter(a => filterCategory === "all" || a.category === filterCategory)
-    .slice(0, 15);
+  const filteredActivities = useMemo(() => {
+    return activities
+      .filter(a => filterCategory === "all" || a.category === filterCategory)
+      .slice(0, 15);
+  }, [activities, filterCategory]);
 
   const handleLoadDemo = useCallback(() => {
     saveActivities(MOCK_ACTIVITIES);

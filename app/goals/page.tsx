@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback, useMemo } from "react";
 import Link from "next/link";
 import {
   Sprout,
@@ -397,7 +397,6 @@ export default function GoalsPage() {
   const [isLoaded, setIsLoaded] = useState(false);
   const [activities, setActivities] = useState<ReturnType<typeof getActivities>>([]);
   const [goals, setGoals] = useState<GoalData | null>(null);
-  const [badgeStatuses, setBadgeStatuses] = useState<BadgeStatus[]>([]);
   const [weeklyTarget, setWeeklyTarget] = useState<number>(DAILY_BUDGET_1_5C * 7);
 
   useEffect(() => {
@@ -405,7 +404,6 @@ export default function GoalsPage() {
     const savedGoals = getGoals();
     setActivities(acts);
     setGoals(savedGoals);
-    setBadgeStatuses(checkBadges(acts));
 
     // Default target: 10% below 4-week rolling average, min 5 kg
     if (savedGoals?.weeklyTargetKg) {
@@ -440,6 +438,20 @@ export default function GoalsPage() {
     [goals]
   );
 
+  // Derived state
+  const now = useMemo(() => new Date(), [activities]); // force dependency if needed, but normally just new Date()
+  const weekStart = useMemo(() => {
+    const d = new Date();
+    d.setDate(d.getDate() - 6);
+    d.setHours(0, 0, 0, 0);
+    return d;
+  }, [activities]); // simple way to not break dependencies
+
+  const weeklyKg = useMemo(() => getTotalForPeriod(activities, weekStart, new Date()), [activities, weekStart]);
+  const streak = useMemo(() => calculateStreak(activities), [activities]);
+  const comparison = useMemo(() => getWeeklyComparison(activities), [activities]);
+  const badgeStatuses = useMemo(() => checkBadges(activities), [activities]);
+
   if (!isLoaded) {
     return (
       <div className="flex h-[50vh] items-center justify-center">
@@ -453,18 +465,8 @@ export default function GoalsPage() {
     );
   }
 
-  // Derived state
-  const now = new Date();
-  const weekStart = new Date(now);
-  weekStart.setDate(now.getDate() - 6);
-  weekStart.setHours(0, 0, 0, 0);
-
-  const weeklyKg = getTotalForPeriod(activities, weekStart, now);
-  const streak = calculateStreak(activities);
-  const comparison = getWeeklyComparison(activities);
-
   // Did user log anything today?
-  const todayStart = new Date(now);
+  const todayStart = new Date();
   todayStart.setHours(0, 0, 0, 0);
   const loggedToday = activities.some(
     (a) => new Date(a.timestamp).getTime() >= todayStart.getTime()

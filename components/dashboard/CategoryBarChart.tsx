@@ -42,7 +42,7 @@ function getTopSubtype(
   return factorInfo?.label ?? top[0];
 }
 
-export function CategoryBarChart({ activities, startDate, endDate }: CategoryBarChartProps) {
+export const CategoryBarChart = React.memo(function CategoryBarChart({ activities, startDate, endDate }: CategoryBarChartProps) {
   const [hoveredBar, setHoveredBar] = useState<string | null>(null);
   const [mounted, setMounted] = useState(false);
 
@@ -184,4 +184,4 @@ export function CategoryBarChart({ activities, startDate, endDate }: CategoryBar
       </div>
     </div>
   );
-}
+});

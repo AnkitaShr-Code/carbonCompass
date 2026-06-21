@@ -42,6 +42,9 @@ export default function TrackerPage() {
 
   const [, startTransition] = useTransition();
 
+  // Equivalences live mapping
+  const previewEquiv = React.useMemo(() => getEquivalences(co2ePreview), [co2ePreview]);
+
   if (!isLoaded) {
     return (
       <div className="flex h-[50vh] items-center justify-center">
@@ -74,9 +77,6 @@ export default function TrackerPage() {
   // Perform validation checks for display
   const qtyNum = parseFloat(quantity);
   const isInputInvalid = quantity !== "" && (isNaN(qtyNum) || qtyNum <= 0 || qtyNum > 10000);
-
-  // Equivalences live mapping
-  const previewEquiv = getEquivalences(co2ePreview);
 
   const handleCategoryCardClick = (key: 'transport' | 'food' | 'energy' | 'shopping' | 'waste') => {
     startTransition(() => {

@@ -70,7 +70,7 @@ const PB = 36;   // pad bottom
 const CW = VW - PL - PR;
 const CH = VH - PT - PB;
 
-export function TrendLineChart({ activities }: TrendLineChartProps) {
+export const TrendLineChart = React.memo(function TrendLineChart({ activities }: TrendLineChartProps) {
   const [hoveredIdx, setHoveredIdx] = useState<number | null>(null);
   const [animated, setAnimated] = useState(false);
   const pathRef = useRef<SVGPathElement>(null);
@@ -312,4 +312,4 @@ export function TrendLineChart({ activities }: TrendLineChartProps) {
       })()}
     </div>
   );
-}
+});
