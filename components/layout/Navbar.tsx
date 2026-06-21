@@ -59,9 +59,9 @@ export function Navbar() {
   ];
 
   return (
-    <>
+    <header>
       {/* Desktop Header & Mobile Top Bar */}
-      <header className="sticky top-0 z-50 w-full border-b border-gray-200 bg-white/80 backdrop-blur-md dark:border-gray-800 dark:bg-gray-950/80">
+      <div className="sticky top-0 z-50 w-full border-b border-gray-200 bg-white/80 backdrop-blur-md dark:border-gray-800 dark:bg-gray-950/80">
         <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
           {/* Logo */}
           <Link 
@@ -100,7 +100,7 @@ export function Navbar() {
             <button
               onClick={toggleTheme}
               className="rounded-lg p-2 text-gray-500 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-400 dark:hover:bg-gray-900 dark:hover:text-white transition-colors focus:outline-none focus:ring-2 focus:ring-green-600 focus:ring-offset-2"
-              aria-label="Toggle Theme"
+              aria-label="Toggle dark mode"
             >
               {theme === "light" ? (
                 <Moon className="h-5 w-5" />
@@ -122,7 +122,7 @@ export function Navbar() {
             </Link>
           </div>
         </div>
-      </header>
+      </div>
 
       {/* Mobile Bottom Tab Navigation */}
       <nav className="fixed bottom-0 left-0 right-0 z-50 border-t border-gray-200 bg-white/95 pb-safe dark:border-gray-800 dark:bg-gray-950/95 md:hidden">
@@ -147,6 +147,6 @@ export function Navbar() {
           })}
         </div>
       </nav>
-    </>
+    </header>
   );
 }

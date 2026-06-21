@@ -11,7 +11,7 @@ export function StepWelcome({ handleNext, getTabIndex, stepIndex }: StepWelcomeP
   return (
     <div className="w-1/5 shrink-0 px-2 flex flex-col justify-between h-full space-y-6">
       <div className="text-center space-y-4">
-        <h3 id="wizard-title" className="text-xl font-extrabold tracking-tight text-gray-900 dark:text-white sm:text-2xl">
+        <h3 className="text-xl font-extrabold tracking-tight text-gray-900 dark:text-white sm:text-2xl">
           Track your carbon footprint in 60 seconds a day
         </h3>
         <p className="text-sm text-gray-500 dark:text-gray-300">

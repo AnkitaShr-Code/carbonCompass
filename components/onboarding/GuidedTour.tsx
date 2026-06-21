@@ -120,6 +120,23 @@ export const GuidedTour = React.memo(function GuidedTour() {
     setHighlight(h);
   }, [currentStep]);
 
+  const dismiss = useCallback(() => {
+    try {
+      localStorage.setItem(TOUR_KEY, "1");
+    } catch (e) {
+      console.error(e);
+    }
+    setVisible(false);
+  }, []);
+
+  const next = useCallback(() => {
+    if (step >= STEPS.length - 1) {
+      dismiss();
+    } else {
+      setStep(s => s + 1);
+    }
+  }, [step, dismiss]);
+
   useEffect(() => {
     // Only show if tour hasn't been done
     if (typeof window === "undefined") return;
@@ -140,30 +157,20 @@ export const GuidedTour = React.memo(function GuidedTour() {
   useEffect(() => {
     if (!visible) return;
     updatePosition();
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        dismiss();
+      }
+    };
     window.addEventListener("resize", updatePosition);
     window.addEventListener("scroll", updatePosition, { passive: true });
+    window.addEventListener("keydown", handleKeyDown);
     return () => {
       window.removeEventListener("resize", updatePosition);
       window.removeEventListener("scroll", updatePosition);
+      window.removeEventListener("keydown", handleKeyDown);
     };
-  }, [visible, step, updatePosition]);
-
-  const dismiss = useCallback(() => {
-    try {
-      localStorage.setItem(TOUR_KEY, "1");
-    } catch (e) {
-      console.error(e);
-    }
-    setVisible(false);
-  }, []);
-
-  const next = useCallback(() => {
-    if (step >= STEPS.length - 1) {
-      dismiss();
-    } else {
-      setStep(s => s + 1);
-    }
-  }, [step, dismiss]);
+  }, [visible, step, updatePosition, dismiss]);
 
   if (!visible || !currentStep) return null;
 

@@ -72,6 +72,14 @@ describe("calculateStreak", () => {
     ];
     expect(calculateStreak(acts)).toBe(1);
   });
+
+  it("returns 0 when activities are only from last week (none today or yesterday)", () => {
+    const acts = [
+      makeActivity({ timestamp: daysAgo(8) }),
+      makeActivity({ timestamp: daysAgo(9) }),
+    ];
+    expect(calculateStreak(acts)).toBe(0);
+  });
 });
 
 // ─── getWeeklyComparison ──────────────────────────────────────────────────────
@@ -127,6 +135,16 @@ describe("getWeeklyComparison", () => {
   it("returns '—' for bestDayLabel when no data", () => {
     const result = getWeeklyComparison([]);
     expect(result.bestDayLabel).toBe("—");
+  });
+
+  it("handles only current week data gracefully (lastWeek = 0, changePercent = 0)", () => {
+    const acts = [
+      makeActivity({ timestamp: daysAgo(0), co2e: 5 }),
+    ];
+    const result = getWeeklyComparison(acts);
+    expect(result.thisWeek).toBe(5);
+    expect(result.lastWeek).toBe(0);
+    expect(result.changePercent).toBe(0);
   });
 });
 
@@ -280,6 +298,29 @@ describe("checkBadges", () => {
     );
     const result = checkBadges(acts);
     const badge = result.find((b) => b.id === "budget_hero");
+    expect(badge?.unlocked).toBe(false);
+  });
+
+  it("streak_7 locked with 6 consecutive days, progress is approx 86", () => {
+    const acts = Array.from({ length: 6 }, (_, i) =>
+      makeActivity({ timestamp: daysAgo(i), id: `s${i}` })
+    );
+    const result = checkBadges(acts);
+    const badge = result.find((b) => b.id === "streak_7");
+    expect(badge?.unlocked).toBe(false);
+    expect(badge?.progress).toBe(86);
+  });
+
+  it("car_free_week is locked when one car entry is logged on day 5 (daysAgo(5))", () => {
+    const acts = Array.from({ length: 7 }, (_, i) =>
+      makeActivity({
+        timestamp: daysAgo(i),
+        subtype: i === 5 ? "car_petrol" : "bus",
+        id: `c${i}`,
+      })
+    );
+    const result = checkBadges(acts);
+    const badge = result.find((b) => b.id === "car_free_week");
     expect(badge?.unlocked).toBe(false);
   });
 

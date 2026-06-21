@@ -172,9 +172,9 @@ export default function ProfilePage() {
       )}
 
       <div>
-        <h2 className="text-2xl font-extrabold tracking-tight text-gray-900 dark:text-white sm:text-3xl">
+        <h1 className="text-2xl font-extrabold tracking-tight text-gray-900 dark:text-white sm:text-3xl">
           User Settings & Profile
-        </h2>
+        </h1>
         <p className="text-sm text-gray-500 dark:text-gray-300">
           View your environmental profile and overall CarbonCompass score.
         </p>

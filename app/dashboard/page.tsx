@@ -186,142 +186,148 @@ export default function DashboardPage() {
       />
 
       {/* ── Row 1: 4 Stat Cards ── */}
-      <div className="grid gap-4 grid-cols-2 lg:grid-cols-4">
-        <StatCard
-          label="Today's Total"
-          value={todayKg}
-          unit="kg CO₂e"
-          accent="border-l-emerald-500"
-        />
-        <StatCard
-          label="This Week"
-          value={weekKg}
-          unit="kg CO₂e"
-          accent="border-l-blue-500"
-        />
-        <StatCard
-          label="This Month"
-          value={monthKg}
-          unit="kg CO₂e"
-          accent="border-l-purple-500"
-        />
-        <StatCard
-          label="vs Daily Budget"
-          value={Math.abs(budgetDiff)}
-          unit="kg"
-          accent={budgetIsGood ? "border-l-emerald-500" : "border-l-red-500"}
-          sub={
-            <div className={`flex items-center gap-1 text-xs font-bold ${
-              budgetIsGood ? "text-emerald-600 dark:text-emerald-400" : "text-red-600 dark:text-red-400"
-            }`}>
-              {budgetIsGood ? (
-                <><TrendingDown className="h-3.5 w-3.5" /> {budgetDiff.toFixed(2)} kg under ✓</>
-              ) : (
-                <><TrendingUp className="h-3.5 w-3.5" /> {Math.abs(budgetDiff).toFixed(2)} kg over ⚠</>
-              )}
-            </div>
-          }
-        />
-      </div>
-
-      {/* ── Row 2: Category Bar Chart + Summary Card ── */}
-      <div className="grid gap-4 lg:grid-cols-5">
-        {/* Bar Chart — 3 cols */}
-        <Card className="lg:col-span-3">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2 text-base">
-              <BarChart3 className="h-4 w-4 text-emerald-500" />
-              Emissions by Category
-            </CardTitle>
-            <CardDescription>Breakdown of your carbon footprint this week</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <CategoryBarChart
-              activities={activities}
-              startDate={weekStart}
-              endDate={farFuture}
-            />
-          </CardContent>
-        </Card>
-
-        {/* Quick summary — 2 cols */}
-        <Card className="lg:col-span-2 flex flex-col justify-between">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2 text-base">
-              <Leaf className="h-4 w-4 text-emerald-500" />
-              Weekly Snapshot
-            </CardTitle>
-            <CardDescription>Your biggest emission source and next step</CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            {biggestCatName ? (
-              <>
-                <div className={`rounded-xl p-4 ${CATEGORY_BG[biggestCatName as Category]}`}>
-                  <div className="flex items-center gap-2 mb-1">
-                    {React.createElement(CATEGORY_ICONS[biggestCatName as Category], {
-                      className: `h-5 w-5 ${CATEGORY_COLORS[biggestCatName as Category]}`,
-                      strokeWidth: 1.8,
-                    })}
-                    <span className={`text-sm font-bold capitalize ${CATEGORY_COLORS[biggestCatName as Category]}`}>
-                      {biggestCatName}
-                    </span>
-                  </div>
-                  <p className="text-xs text-gray-700 dark:text-gray-300 leading-relaxed">
-                    Your biggest source this week is{" "}
-                    <strong className="capitalize">{biggestCatName}</strong> at{" "}
-                    <strong>{biggestCatVal.toFixed(2)} kg CO₂e</strong>.{" "}
-                    {suggestMap[biggestCatName]}
-                  </p>
-                </div>
-                <div className="text-xs text-gray-500 dark:text-gray-300 space-y-1.5">
-                  {Object.entries(weekCatBreakdown)
-                    .sort((a, b) => b[1] - a[1])
-                    .map(([cat, kg]) => (
-                      <div key={cat} className="flex justify-between items-center">
-                        <span className="capitalize font-medium">{cat}</span>
-                        <span className="font-bold text-gray-700 dark:text-gray-300">
-                          {kg.toFixed(2)} kg
-                        </span>
-                      </div>
-                    ))}
-                </div>
-              {/* AI CTA at bottom of the card when data exists */}
-              <Link
-                href="/insights"
-                className="mt-1 inline-flex items-center gap-1.5 text-xs font-bold text-emerald-600 dark:text-emerald-400 hover:underline focus:outline-none focus:ring-2 focus:ring-emerald-500 rounded"
-              >
-                <Sparkles className="h-3.5 w-3.5" aria-hidden="true" />
-                Get AI recommendations →
-              </Link>
-            </>
-            ) : (
-              <div className="flex flex-col items-center justify-center py-8 text-center text-gray-400 dark:text-gray-300 gap-2">
-                <Info className="h-6 w-6 opacity-50" />
-                <p className="text-xs">No activities logged this week.</p>
-                <Link href="/tracker" className="text-xs font-bold text-emerald-600 dark:text-emerald-400 hover:underline">
-                  Start tracking →
-                </Link>
+      <section aria-labelledby="stats-heading" className="space-y-3">
+        <h2 id="stats-heading" className="sr-only">Dashboard statistics summary</h2>
+        <div className="grid gap-4 grid-cols-2 lg:grid-cols-4">
+          <StatCard
+            label="Today's Total"
+            value={todayKg}
+            unit="kg CO₂e"
+            accent="border-l-emerald-500"
+          />
+          <StatCard
+            label="This Week"
+            value={weekKg}
+            unit="kg CO₂e"
+            accent="border-l-blue-500"
+          />
+          <StatCard
+            label="This Month"
+            value={monthKg}
+            unit="kg CO₂e"
+            accent="border-l-purple-500"
+          />
+          <StatCard
+            label="vs Daily Budget"
+            value={Math.abs(budgetDiff)}
+            unit="kg"
+            accent={budgetIsGood ? "border-l-emerald-500" : "border-l-red-500"}
+            sub={
+              <div className={`flex items-center gap-1 text-xs font-bold ${
+                budgetIsGood ? "text-emerald-600 dark:text-emerald-400" : "text-red-600 dark:text-red-400"
+              }`}>
+                {budgetIsGood ? (
+                  <><TrendingDown className="h-3.5 w-3.5" /> {budgetDiff.toFixed(2)} kg under ✓</>
+                ) : (
+                  <><TrendingUp className="h-3.5 w-3.5" /> {Math.abs(budgetDiff).toFixed(2)} kg over ⚠</>
+                )}
               </div>
-            )}
+            }
+          />
+        </div>
+      </section>
+
+      {/* ── Rows 2 & 3: Chart Area ── */}
+      <section aria-labelledby="charts-heading" className="space-y-6">
+        <h2 id="charts-heading" className="sr-only">Carbon emissions breakdown and historical trends</h2>
+        <div className="grid gap-4 lg:grid-cols-5">
+          {/* Bar Chart — 3 cols */}
+          <Card className="lg:col-span-3">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2 text-base">
+                <BarChart3 className="h-4 w-4 text-emerald-500" />
+                Emissions by Category
+              </CardTitle>
+              <CardDescription>Breakdown of your carbon footprint this week</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <CategoryBarChart
+                activities={activities}
+                startDate={weekStart}
+                endDate={farFuture}
+              />
+            </CardContent>
+          </Card>
+
+          {/* Quick summary — 2 cols */}
+          <Card className="lg:col-span-2 flex flex-col justify-between">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2 text-base">
+                <Leaf className="h-4 w-4 text-emerald-500" />
+                Weekly Snapshot
+              </CardTitle>
+              <CardDescription>Your biggest emission source and next step</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              {biggestCatName ? (
+                <>
+                  <div className={`rounded-xl p-4 ${CATEGORY_BG[biggestCatName as Category]}`}>
+                    <div className="flex items-center gap-2 mb-1">
+                      {React.createElement(CATEGORY_ICONS[biggestCatName as Category], {
+                        className: `h-5 w-5 ${CATEGORY_COLORS[biggestCatName as Category]}`,
+                        strokeWidth: 1.8,
+                      })}
+                      <span className={`text-sm font-bold capitalize ${CATEGORY_COLORS[biggestCatName as Category]}`}>
+                        {biggestCatName}
+                      </span>
+                    </div>
+                    <p className="text-xs text-gray-750 dark:text-gray-300 leading-relaxed">
+                      Your biggest source this week is{" "}
+                      <strong className="capitalize">{biggestCatName}</strong> at{" "}
+                      <strong>{biggestCatVal.toFixed(2)} kg CO₂e</strong>.{" "}
+                      {suggestMap[biggestCatName]}
+                    </p>
+                  </div>
+                  <div className="text-xs text-gray-500 dark:text-gray-300 space-y-1.5">
+                    {Object.entries(weekCatBreakdown)
+                      .sort((a, b) => b[1] - a[1])
+                      .map(([cat, kg]) => (
+                        <div key={cat} className="flex justify-between items-center">
+                          <span className="capitalize font-medium">{cat}</span>
+                          <span className="font-bold text-gray-700 dark:text-gray-300">
+                            {kg.toFixed(2)} kg
+                          </span>
+                        </div>
+                      ))}
+                  </div>
+                {/* AI CTA at bottom of the card when data exists */}
+                <Link
+                  href="/insights"
+                  className="mt-1 inline-flex items-center gap-1.5 text-xs font-bold text-emerald-600 dark:text-emerald-400 hover:underline focus:outline-none focus:ring-2 focus:ring-emerald-500 rounded"
+                >
+                  <Sparkles className="h-3.5 w-3.5" aria-hidden="true" />
+                  Get AI recommendations →
+                </Link>
+              </>
+              ) : (
+                <div className="flex flex-col items-center justify-center py-8 text-center text-gray-400 dark:text-gray-300 gap-2">
+                  <Info className="h-6 w-6 opacity-50" />
+                  <p className="text-xs">No activities logged this week.</p>
+                  <Link href="/tracker" className="text-xs font-bold text-emerald-600 dark:text-emerald-400 hover:underline">
+                    Start tracking →
+                  </Link>
+                </div>
+              )}
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* ── Row 3: 7-day Trend Line ── */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2 text-base">
+              <TrendingDown className="h-4 w-4 text-emerald-500" />
+              7-Day Trend
+            </CardTitle>
+            <CardDescription>
+              Daily CO₂e over the last 7 days vs the 1.5°C daily budget ({DAILY_BUDGET_1_5C} kg)
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="pb-2">
+            <TrendLineChart activities={activities} />
           </CardContent>
         </Card>
-      </div>
-
-      {/* ── Row 3: 7-day Trend Line ── */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2 text-base">
-            <TrendingDown className="h-4 w-4 text-emerald-500" />
-            7-Day Trend
-          </CardTitle>
-          <CardDescription>
-            Daily CO₂e over the last 7 days vs the 1.5°C daily budget ({DAILY_BUDGET_1_5C} kg)
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="pb-2">
-          <TrendLineChart activities={activities} />
-        </CardContent>
-      </Card>
+      </section>
 
       {/* ── Row 4: Equivalence Cards ── */}
       <div>
@@ -335,10 +341,13 @@ export default function DashboardPage() {
       <DailyTipCard />
 
       {/* ── Row 5: Recent Activity List ── */}
-      <RecentActivityLog
-        activities={activities}
-        deleteActivity={deleteActivity}
-      />
+      <section aria-labelledby="activity-log-heading">
+        <h2 id="activity-log-heading" className="sr-only">Recent activities log</h2>
+        <RecentActivityLog
+          activities={activities}
+          deleteActivity={deleteActivity}
+        />
+      </section>
 
       {/* ── Guided Tour (only after demo load, once) ── */}
       {showTour && <GuidedTour />}

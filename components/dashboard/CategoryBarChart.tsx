@@ -77,6 +77,7 @@ export const CategoryBarChart = React.memo(function CategoryBarChart({ activitie
 
   const maxKg = Math.max(...rows.map(r => r.kg), 0.1);
   const grandTotal = rows.reduce((s, r) => s + r.kg, 0);
+  const detailedAriaLabel = `Bar chart showing carbon emissions by category: ${rows.map(r => `${r.config.label} ${r.kg} kg`).join(", ")}`;
 
   if (rows.length === 0) {
     return (
@@ -92,7 +93,7 @@ export const CategoryBarChart = React.memo(function CategoryBarChart({ activitie
   }
 
   return (
-    <div className="space-y-3 relative" role="list" aria-label="Category emissions breakdown">
+    <div className="space-y-3 relative" role="region" aria-label={detailedAriaLabel}>
       {rows.map((row, idx) => {
         const pct = grandTotal > 0 ? ((row.kg / grandTotal) * 100).toFixed(1) : "0.0";
         const barWidth = mounted ? (row.kg / maxKg) * 100 : 0;
@@ -101,7 +102,7 @@ export const CategoryBarChart = React.memo(function CategoryBarChart({ activitie
         const tooltipAbove = idx >= rows.length / 2;
 
         return (
-          <div key={row.cat} className="relative" role="listitem">
+          <div key={row.cat} className="relative">
             <div
               tabIndex={0}
               role="button"

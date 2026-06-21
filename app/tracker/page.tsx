@@ -95,9 +95,9 @@ export default function TrackerPage() {
   return (
     <div className="space-y-6 animate-fade-in">
       <div>
-        <h2 className="text-2xl font-extrabold tracking-tight text-gray-900 dark:text-white sm:text-3xl">
+        <h1 className="text-2xl font-extrabold tracking-tight text-gray-900 dark:text-white sm:text-3xl">
           Carbon Activity Tracker
-        </h2>
+        </h1>
         <p className="text-sm text-gray-500 dark:text-gray-300">
           Log daily activities to estimate and review carbon impact.
         </p>
@@ -193,6 +193,14 @@ export default function TrackerPage() {
                       <button
                         key={key}
                         onClick={() => handleSubtypeCardClick(key)}
+                        onKeyDown={(e) => {
+                          if (e.key === "Enter" || e.key === " ") {
+                            e.preventDefault();
+                            handleSubtypeCardClick(key);
+                          }
+                        }}
+                        role="button"
+                        tabIndex={0}
                         className={`flex items-center justify-between p-3.5 text-left text-xs font-semibold rounded-lg border transition-all focus:outline-none focus:ring-2 focus:ring-emerald-500 ${
                           isSelected
                             ? "border-emerald-500 bg-emerald-50/50 text-emerald-900 dark:border-green-500 dark:bg-green-900/50 dark:text-green-300 border-2"
@@ -234,6 +242,7 @@ export default function TrackerPage() {
                           isInputInvalid ? "border-red-500 dark:border-red-400" : "border-gray-300 dark:border-gray-700"
                         }`}
                         required
+                        aria-required="true"
                       />
                       <span className="absolute right-3 text-xs font-bold text-gray-450 select-none uppercase">
                         {currentUnit}
@@ -242,7 +251,7 @@ export default function TrackerPage() {
 
                     {/* Inline Error Message */}
                     {isInputInvalid && (
-                      <div className="flex items-center gap-1 text-xs text-red-650 dark:text-red-400 mt-1.5 font-bold">
+                      <div role="alert" aria-live="assertive" className="flex items-center gap-1 text-xs text-red-650 dark:text-red-400 mt-1.5 font-bold">
                         <AlertTriangle className="h-4 w-4 shrink-0" />
                         <span>Quantity must be greater than {APP_CONSTANTS.MIN_ACTIVITY_QUANTITY} and at most {APP_CONSTANTS.MAX_ACTIVITY_QUANTITY.toLocaleString()}.</span>
                       </div>
@@ -272,7 +281,7 @@ export default function TrackerPage() {
 
                   {/* General submission errors list */}
                   {formErrors.length > 0 && (
-                    <div className="rounded-lg bg-red-50 p-3 text-xs text-red-800 dark:bg-red-950/40 dark:text-red-300 space-y-1">
+                    <div role="alert" aria-live="assertive" className="rounded-lg bg-red-50 p-3 text-xs text-red-800 dark:bg-red-950/40 dark:text-red-300 space-y-1">
                       <div className="flex items-center gap-1 font-bold">
                         <AlertTriangle className="h-4 w-4 shrink-0" />
                         <span>Please correct the errors below:</span>
@@ -298,6 +307,9 @@ export default function TrackerPage() {
               {/* Step 4: Success confirmation screen */}
               {currentStep === 4 && lastLogged && (
                 <div className="text-center py-6 space-y-6 flex flex-col items-center">
+                  <div role="status" aria-live="polite" className="sr-only">
+                    Activity logged: {lastLogged.co2e.toFixed(2)} kg CO₂e
+                  </div>
                   <div className="flex flex-col items-center space-y-2">
                     <CheckCircle2 className="h-14 w-14 text-emerald-500 dark:text-emerald-400 animate-bounce" />
                     <h3 className="text-lg font-black text-gray-900 dark:text-white pt-2">

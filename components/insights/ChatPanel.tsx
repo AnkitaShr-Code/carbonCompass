@@ -252,6 +252,7 @@ export function ChatPanel({
             placeholder="Ask about your data, request simulations…"
             disabled={isLoading}
             maxLength={500}
+            aria-required="true"
             className="flex-1 h-10 rounded-lg border border-gray-200 dark:border-gray-600 bg-gray-50 dark:bg-gray-800 px-3 py-2 text-sm text-gray-900 dark:text-gray-100 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-green-600 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
           />
           <button
@@ -263,6 +264,11 @@ export function ChatPanel({
             <Send className="h-4 w-4" />
           </button>
         </div>
+        {!isLoading && lastMsg?.role === "assistant" && (
+          <div role="status" aria-live="polite" className="sr-only">
+            New insight received
+          </div>
+        )}
       </form>
     </div>
   );

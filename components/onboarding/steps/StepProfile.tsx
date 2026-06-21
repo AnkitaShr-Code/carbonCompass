@@ -46,6 +46,8 @@ export function StepProfile({
             value={country}
             onChange={(e) => setCountry(e.target.value)}
             className="flex h-10 w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-600 focus:ring-offset-2 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-100"
+            required
+            aria-required="true"
           >
             <option value="usa">🇺🇸 United States</option>
             <option value="uk">🇬🇧 United Kingdom</option>
@@ -54,8 +56,8 @@ export function StepProfile({
             <option value="australia">🇦🇺 Australia</option>
           </select>
         </div>
-        <div className="space-y-2">
-          <span className="text-sm font-semibold text-gray-700 dark:text-gray-300 block">Lifestyle Area</span>
+        <fieldset className="space-y-2">
+          <legend className="text-sm font-semibold text-gray-700 dark:text-gray-300 block">Lifestyle Area</legend>
           <div className="grid grid-cols-3 gap-2">
             {(["city", "suburban", "rural"] as const).map((opt) => (
               <div key={opt} className="relative">
@@ -71,14 +73,14 @@ export function StepProfile({
                 />
                 <label
                   htmlFor={`life-${opt}`}
-                  className="flex flex-col items-center justify-center p-3 text-xs font-semibold rounded-lg border border-gray-200 bg-white cursor-pointer hover:bg-gray-50 peer-checked:border-emerald-500 peer-checked:bg-emerald-50 peer-checked:text-emerald-900 dark:bg-gray-800 dark:border-gray-600 dark:text-gray-100 dark:hover:bg-gray-700 dark:peer-checked:border-emerald-500 dark:peer-checked:bg-emerald-900/50 dark:peer-checked:text-emerald-300 transition-all text-center"
+                  className="flex flex-col items-center justify-center p-3 text-xs font-semibold rounded-lg border border-gray-200 bg-white cursor-pointer hover:bg-gray-50 peer-checked:border-emerald-500 peer-checked:bg-emerald-50 peer-checked:text-emerald-900 dark:bg-gray-800 dark:border-gray-600 dark:text-gray-100 dark:hover:bg-gray-700 dark:peer-checked:border-emerald-500 dark:peer-checked:bg-emerald-900/50 dark:peer-checked:text-emerald-300 transition-all text-center peer-focus-visible:ring-2 peer-focus-visible:ring-emerald-500 peer-focus-visible:ring-offset-2"
                 >
                   <span className="capitalize">{opt}</span>
                 </label>
               </div>
             ))}
           </div>
-        </div>
+        </fieldset>
       </div>
       <div className="flex justify-between items-center pt-4">
         <Button variant="ghost" tabIndex={getTabIndex(stepIndex)} onClick={handleBack} className="flex items-center gap-1">

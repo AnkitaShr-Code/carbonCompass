@@ -187,6 +187,8 @@ function WeeklyGoalSection({
             }}
             className="w-24 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 px-3 py-1.5 text-sm font-bold text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-500 text-center"
             aria-label="Weekly target in kg CO₂e"
+            required
+            aria-required="true"
           />
           <span className="text-[10px] text-gray-400 dark:text-gray-300">
             (1.5°C budget = {(DAILY_BUDGET_1_5C * 7).toFixed(0)} kg/week)
@@ -479,12 +481,20 @@ export default function GoalsPage() {
     <div className="space-y-8 animate-fade-in">
       {/* ── Page header ── */}
       <div>
-        <h2 className="text-2xl font-extrabold tracking-tight text-gray-900 dark:text-white sm:text-3xl">
+        <h1 className="text-2xl font-extrabold tracking-tight text-gray-900 dark:text-white sm:text-3xl">
           Goals & Achievements
-        </h2>
+        </h1>
         <p className="text-sm text-gray-500 dark:text-gray-300 mt-1">
           Track your weekly target, streak, and badge progress
         </p>
+      </div>
+
+      {/* Visually hidden status region for screen reader badge unlock announcements */}
+      <div role="status" aria-live="polite" className="sr-only">
+        {badgeStatuses
+          .filter((b) => b.unlocked)
+          .map((b) => `Badge unlocked: ${b.name}`)
+          .join(". ")}
       </div>
 
       {/* ── Row 1: Weekly goal + Streak side by side ── */}
@@ -501,13 +511,13 @@ export default function GoalsPage() {
 
       {/* ── Row 2: Badge grid (2×3) ── */}
       <div>
-        <h3 className="text-base font-bold text-gray-800 dark:text-gray-200 mb-4 flex items-center gap-2">
+        <h2 className="text-base font-bold text-gray-800 dark:text-gray-200 mb-4 flex items-center gap-2">
           <Trophy className="h-4 w-4 text-amber-500" />
           Sustainability Badges
           <span className="text-xs font-semibold text-gray-400 ml-1">
             ({badgeStatuses.filter((b) => b.unlocked).length}/{badgeStatuses.length} unlocked)
           </span>
-        </h3>
+        </h2>
         <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
           {BADGES.map((def, i) => {
             const status = badgeStatuses[i] ?? {

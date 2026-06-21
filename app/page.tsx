@@ -70,7 +70,7 @@ export default function HomePage() {
             <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-blue-500/10 text-blue-600 dark:text-blue-400 mb-4">
               <Activity className="h-5 w-5" />
             </div>
-            <h3 className="text-base font-bold text-gray-900 dark:text-white">Smart Carbon Tracker</h3>
+            <h2 className="text-base font-bold text-gray-900 dark:text-white">Smart Carbon Tracker</h2>
             <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">
               Easily log commutes, electricity usage, food selection, and waste to estimate footprint.
             </p>
@@ -80,7 +80,7 @@ export default function HomePage() {
             <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 mb-4">
               <Sparkles className="h-5 w-5" />
             </div>
-            <h3 className="text-base font-bold text-gray-900 dark:text-white">Gemini Coach Insights</h3>
+            <h2 className="text-base font-bold text-gray-900 dark:text-white">Gemini Coach Insights</h2>
             <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">
               Chat with our AI coach to review consumption trends and receive hyper-personalized reduction ideas.
             </p>
@@ -90,7 +90,7 @@ export default function HomePage() {
             <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-amber-500/10 text-amber-600 dark:text-amber-400 mb-4">
               <Target className="h-5 w-5" />
             </div>
-            <h3 className="text-base font-bold text-gray-900 dark:text-white">Eco Achievement Goals</h3>
+            <h2 className="text-base font-bold text-gray-900 dark:text-white">Eco Achievement Goals</h2>
             <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">
               Unlock unique carbon reduction badges and challenge yourself to live carbon neutral.
             </p>

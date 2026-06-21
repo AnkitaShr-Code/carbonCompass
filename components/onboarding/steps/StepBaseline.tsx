@@ -26,8 +26,8 @@ export function StepBaseline({
       <div className="space-y-4">
         <h3 className="text-lg font-bold text-gray-900 dark:text-white">Lifestyle Baseline</h3>
         
-        <div className="space-y-1.5">
-          <span className="text-xs font-bold uppercase tracking-wider text-gray-400">How do you usually commute?</span>
+        <fieldset className="space-y-1.5">
+          <legend className="text-xs font-bold uppercase tracking-wider text-gray-400">How do you usually commute?</legend>
           <div className="grid grid-cols-2 gap-1.5">
             {[
               { key: "walk_cycle", label: "🚶 Walk / Cycle" },
@@ -48,17 +48,17 @@ export function StepBaseline({
                 />
                 <label
                   htmlFor={`commute-${opt.key}`}
-                  className="flex items-center justify-center px-2 py-2 text-xs font-semibold rounded-lg border border-gray-200 bg-white cursor-pointer hover:bg-gray-50 peer-checked:border-emerald-500 peer-checked:bg-emerald-50 peer-checked:text-emerald-900 dark:bg-gray-800 dark:border-gray-600 dark:text-gray-100 dark:hover:bg-gray-700 dark:peer-checked:border-emerald-500 dark:peer-checked:bg-emerald-900/50 dark:peer-checked:text-emerald-300 transition-all"
+                  className="flex items-center justify-center px-2 py-2 text-xs font-semibold rounded-lg border border-gray-200 bg-white cursor-pointer hover:bg-gray-50 peer-checked:border-emerald-500 peer-checked:bg-emerald-50 peer-checked:text-emerald-900 dark:bg-gray-800 dark:border-gray-600 dark:text-gray-100 dark:hover:bg-gray-700 dark:peer-checked:border-emerald-500 dark:peer-checked:bg-emerald-900/50 dark:peer-checked:text-emerald-300 transition-all peer-focus-visible:ring-2 peer-focus-visible:ring-emerald-500 peer-focus-visible:ring-offset-2"
                 >
                   {opt.label}
                 </label>
               </div>
             ))}
           </div>
-        </div>
+        </fieldset>
 
-        <div className="space-y-1.5">
-          <span className="text-xs font-bold uppercase tracking-wider text-gray-400">How often do you eat meat?</span>
+        <fieldset className="space-y-1.5">
+          <legend className="text-xs font-bold uppercase tracking-wider text-gray-400">How often do you eat meat?</legend>
           <div className="grid grid-cols-2 gap-1.5">
             {[
               { key: "daily_meat", label: "🥩 Daily" },
@@ -79,17 +79,17 @@ export function StepBaseline({
                 />
                 <label
                   htmlFor={`diet-${opt.key}`}
-                  className="flex items-center justify-center px-2 py-2 text-xs font-semibold rounded-lg border border-gray-200 bg-white cursor-pointer hover:bg-gray-50 peer-checked:border-emerald-500 peer-checked:bg-emerald-50 peer-checked:text-emerald-900 dark:bg-gray-800 dark:border-gray-600 dark:text-gray-100 dark:hover:bg-gray-700 dark:peer-checked:border-emerald-500 dark:peer-checked:bg-emerald-900/50 dark:peer-checked:text-emerald-300 transition-all"
+                  className="flex items-center justify-center px-2 py-2 text-xs font-semibold rounded-lg border border-gray-200 bg-white cursor-pointer hover:bg-gray-50 peer-checked:border-emerald-500 peer-checked:bg-emerald-50 peer-checked:text-emerald-900 dark:bg-gray-800 dark:border-gray-600 dark:text-gray-100 dark:hover:bg-gray-700 dark:peer-checked:border-emerald-500 dark:peer-checked:bg-emerald-900/50 dark:peer-checked:text-emerald-300 transition-all peer-focus-visible:ring-2 peer-focus-visible:ring-emerald-500 peer-focus-visible:ring-offset-2"
                 >
                   {opt.label}
                 </label>
               </div>
             ))}
           </div>
-        </div>
+        </fieldset>
 
-        <div className="space-y-1.5">
-          <span className="text-xs font-bold uppercase tracking-wider text-gray-400">What is your home energy source?</span>
+        <fieldset className="space-y-1.5">
+          <legend className="text-xs font-bold uppercase tracking-wider text-gray-400">What is your home energy source?</legend>
           <div className="grid grid-cols-3 gap-1.5">
             {[
               { key: "grid", label: "🔌 Grid" },
@@ -109,14 +109,14 @@ export function StepBaseline({
                 />
                 <label
                   htmlFor={`energy-${opt.key}`}
-                  className="flex flex-col items-center justify-center p-2 text-[10px] font-bold rounded-lg border border-gray-200 bg-white cursor-pointer hover:bg-gray-50 peer-checked:border-emerald-500 peer-checked:bg-emerald-50 peer-checked:text-emerald-900 dark:bg-gray-800 dark:border-gray-600 dark:text-gray-100 dark:hover:bg-gray-700 dark:peer-checked:border-emerald-500 dark:peer-checked:bg-emerald-900/50 dark:peer-checked:text-emerald-300 transition-all text-center"
+                  className="flex flex-col items-center justify-center p-2 text-[10px] font-bold rounded-lg border border-gray-200 bg-white cursor-pointer hover:bg-gray-50 peer-checked:border-emerald-500 peer-checked:bg-emerald-50 peer-checked:text-emerald-900 dark:bg-gray-800 dark:border-gray-600 dark:text-gray-100 dark:hover:bg-gray-700 dark:peer-checked:border-emerald-500 dark:peer-checked:bg-emerald-900/50 dark:peer-checked:text-emerald-300 transition-all text-center peer-focus-visible:ring-2 peer-focus-visible:ring-emerald-500 peer-focus-visible:ring-offset-2"
                 >
                   {opt.label}
                 </label>
               </div>
             ))}
           </div>
-        </div>
+        </fieldset>
       </div>
       <div className="flex justify-between items-center pt-4">
         <Button variant="ghost" tabIndex={getTabIndex(stepIndex)} onClick={handleBack} className="flex items-center gap-1">

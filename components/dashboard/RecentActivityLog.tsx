@@ -193,7 +193,7 @@ export const RecentActivityLog = React.memo(function RecentActivityLog({
                           <button
                             onClick={() => setConfirmDeleteId(act.id)}
                             className="rounded p-1.5 text-gray-300 hover:text-red-500 dark:hover:text-red-400 transition-colors cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-red-400"
-                            aria-label={`Delete ${getSubtypeLabel(act.category, act.subtype)} entry`}
+                            aria-label={`Delete activity: ${getSubtypeLabel(act.category, act.subtype)}`}
                           >
                             <Trash2 className="h-4 w-4" />
                           </button>

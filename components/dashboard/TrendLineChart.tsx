@@ -106,13 +106,15 @@ export const TrendLineChart = React.memo(function TrendLineChart({ activities }:
     return () => clearTimeout(t);
   }, [activities]);
 
+  const dynamicAriaLabel = `7-day carbon emissions trend chart: ${days.map(d => `${d.label} ${d.kg} kg`).join(", ")}`;
+
   return (
     <div className="relative w-full select-none">
       <svg
         viewBox={`0 0 ${VW} ${VH}`}
         className="w-full h-auto overflow-visible"
         role="img"
-        aria-label="7-day carbon emissions trend chart"
+        aria-label={dynamicAriaLabel}
       >
         {/* Gridlines */}
         {gridVals.map((v, i) => {

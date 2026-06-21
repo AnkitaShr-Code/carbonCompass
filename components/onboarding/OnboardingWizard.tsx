@@ -171,6 +171,13 @@ export function OnboardingWizard() {
         aria-labelledby="wizard-title"
         className="relative w-full max-w-lg overflow-hidden rounded-2xl border border-gray-200 bg-white p-6 shadow-xl dark:border-gray-800 dark:bg-gray-900"
       >
+        <h2 id="wizard-title" className="sr-only">
+          {currentStep === 0 && "Track your carbon footprint in 60 seconds a day"}
+          {currentStep === 1 && "About You"}
+          {currentStep === 2 && "Lifestyle Baseline"}
+          {currentStep === 3 && "Estimated Baseline"}
+          {currentStep === 4 && "You're all set!"}
+        </h2>
         <div className="flex justify-center space-x-2 mb-6">
           {[0, 1, 2, 3, 4].map((idx) => (
             <div
