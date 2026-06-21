@@ -384,10 +384,10 @@ function WeeklySummaryCard({
         <Link
           href="/insights"
           className="inline-flex items-center gap-2 w-full justify-center rounded-xl bg-emerald-600 hover:bg-emerald-700 active:scale-95 text-white font-bold px-4 py-2.5 text-sm transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500"
-          aria-label="Get AI suggestions for this week"
+          aria-label="Get AI suggestions for next week"
         >
           <Sparkles className="h-4 w-4" aria-hidden="true" />
-          Get AI suggestions for this week
+          Get AI suggestions for next week &rarr;
         </Link>
       </CardContent>
     </Card>

@@ -208,12 +208,14 @@ export async function POST(req: NextRequest) {
 
 RULES:
 - Analyze the user's SPECIFIC data. Never give generic advice.
+- Focus your analysis and recommendations primarily on the user's highest emission sources, which are specified in the context as topCategory and topSubtype.
+- If the user's topCategory is transport, do NOT primarily recommend food changes, and vice-versa. Focus on the actual topCategory and topSubtype context.
+- If they have high transport but already use public transit, praise them and focus on other categories.
+- Be encouraging — highlight wins before suggesting improvements. If user has a logging streak (streak > 0) or low emissions in a category, praise them before suggesting any behavior changes.
 - Reference their actual numbers (e.g., "Your transport emissions of 12.3 kg this week are 45% of your total...").
 - Consider their country (provided in context) and lifestyle when suggesting alternatives.
 - If they are in India, suggest local alternatives (metro, electric auto-rickshaw, seasonal vegetables, solar water heater).
 - If they are in UK or USA, suggest relevant local alternatives (cycling infrastructure, heat pumps, Meatless Monday).
-- If they have high transport but already use public transit, praise them and focus on other categories.
-- Be encouraging — highlight wins before suggesting improvements.
 - Keep responses concise: max 2-3 sentences for the summary.
 
 CRITICAL — PRE-CALCULATED SAVINGS:
