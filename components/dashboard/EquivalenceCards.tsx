@@ -61,23 +61,26 @@ const CARDS: CardConfig[] = [
 
 function useCountUp(target: number, durationMs = 800): number {
   const [value, setValue] = useState(0);
+  const valueRef = useRef(0);
   const rafRef = useRef<number>(0);
   const startRef = useRef<number | null>(null);
-  const prevTarget = useRef(0);
 
   useEffect(() => {
-    if (target === prevTarget.current) return;
-    const from = prevTarget.current;
-    prevTarget.current = target;
+    valueRef.current = value;
+  }, [value]);
+
+  useEffect(() => {
+    if (target === valueRef.current) return;
+    const from = valueRef.current;
     startRef.current = null;
 
     const animate = (ts: number) => {
       if (!startRef.current) startRef.current = ts;
       const elapsed = ts - startRef.current;
       const progress = Math.min(elapsed / durationMs, 1);
-      // Ease out cubic
       const eased = 1 - Math.pow(1 - progress, 3);
-      setValue(parseFloat((from + (target - from) * eased).toFixed(2)));
+      const nextVal = parseFloat((from + (target - from) * eased).toFixed(2));
+      setValue(nextVal);
       if (progress < 1) {
         rafRef.current = requestAnimationFrame(animate);
       } else {
@@ -134,7 +137,7 @@ function EquivalenceCard({ card, value }: { card: CardConfig; value: number }) {
   );
 }
 
-export function EquivalenceCards({ weeklyKg }: EquivalenceCardsProps) {
+export const EquivalenceCards = React.memo(function EquivalenceCards({ weeklyKg }: EquivalenceCardsProps) {
   const equiv = getEquivalences(weeklyKg);
 
   return (
@@ -152,4 +155,4 @@ export function EquivalenceCards({ weeklyKg }: EquivalenceCardsProps) {
       ))}
     </div>
   );
-}
+});

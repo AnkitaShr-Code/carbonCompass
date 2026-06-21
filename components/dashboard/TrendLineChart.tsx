@@ -97,13 +97,14 @@ export function TrendLineChart({ activities }: TrendLineChartProps) {
   const budgetY = toY(DAILY_BUDGET_1_5C);
 
   useEffect(() => {
+    setAnimated(false);
     if (pathRef.current) {
       const len = pathRef.current.getTotalLength();
       if (len > 0) setPathLength(len);
     }
     const t = setTimeout(() => setAnimated(true), 120);
     return () => clearTimeout(t);
-  }, [activities.length]);
+  }, [activities]);
 
   return (
     <div className="relative w-full select-none">
@@ -198,26 +199,29 @@ export function TrendLineChart({ activities }: TrendLineChartProps) {
             : `${(day.kg - DAILY_BUDGET_1_5C).toFixed(2)} kg over budget`;
 
           return (
-            <g key={i}>
+            <g 
+              key={i}
+              tabIndex={0}
+              role="button"
+              aria-label={`${day.fullDate}: ${day.kg} kg CO₂e — ${budgetStatus}`}
+              className="cursor-pointer focus:outline-none focus:ring-2 focus:ring-green-600 focus:ring-offset-2 rounded"
+              onMouseEnter={() => setHoveredIdx(i)}
+              onMouseLeave={() => setHoveredIdx(null)}
+              onFocus={() => setHoveredIdx(i)}
+              onBlur={() => setHoveredIdx(null)}
+              onKeyDown={e => {
+                if (e.key === "Enter" || e.key === " ") {
+                  setHoveredIdx(hoveredIdx === i ? null : i);
+                }
+              }}
+            >
               {/* Invisible large hit area */}
               <circle
                 cx={cx}
                 cy={cy}
                 r={14}
                 fill="transparent"
-                tabIndex={0}
-                role="button"
-                aria-label={`${day.fullDate}: ${day.kg} kg CO₂e — ${budgetStatus}`}
-                className="cursor-pointer focus:outline-none"
-                onMouseEnter={() => setHoveredIdx(i)}
-                onMouseLeave={() => setHoveredIdx(null)}
-                onFocus={() => setHoveredIdx(i)}
-                onBlur={() => setHoveredIdx(null)}
-                onKeyDown={e => {
-                  if (e.key === "Enter" || e.key === " ") {
-                    setHoveredIdx(hoveredIdx === i ? null : i);
-                  }
-                }}
+                pointerEvents="all"
               />
               {/* Visible circle */}
               <circle

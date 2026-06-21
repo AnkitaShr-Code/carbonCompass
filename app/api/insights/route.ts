@@ -102,7 +102,7 @@ export async function POST(req: NextRequest) {
 
   // Validate message
   const rawMessage = body.message;
-  if (typeof rawMessage !== "string" || !rawMessage.trim()) {
+  if (typeof rawMessage !== "string" || !rawMessage.trim() || rawMessage.length > 500) {
     return NextResponse.json({ error: "Invalid request" }, { status: 400 });
   }
   const message = sanitizeString(rawMessage, 500);
@@ -122,6 +122,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json(NO_KEY_RESPONSE, { status: 200 });
   }
 
+  // Production: add rate limiting (e.g., Upstash ratelimit or next-rate-limit)
   try {
     // ── Step 3: Pre-calculate all numbers deterministically ────────────────
     const now = new Date();

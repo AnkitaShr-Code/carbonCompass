@@ -211,14 +211,18 @@ export function ChatPanel({
 
         {/* Error state */}
         {error && (
-          <div className="rounded-xl border border-amber-200 dark:border-amber-800/50 bg-amber-50 dark:bg-amber-950/20 p-3.5 text-xs text-amber-800 dark:text-amber-300 flex items-start justify-between gap-3">
+          <div 
+            role="alert" 
+            aria-live="assertive"
+            className="rounded-xl border border-amber-200 dark:border-amber-800/50 bg-amber-50 dark:bg-amber-950/20 p-3.5 text-xs text-amber-800 dark:text-amber-300 flex items-start justify-between gap-3"
+          >
             <div className="flex gap-2 items-start">
               <AlertTriangle className="h-4 w-4 shrink-0 mt-0.5" aria-hidden="true" />
               <p className="leading-relaxed">{error}</p>
             </div>
             <button
               onClick={onRetry}
-              className="flex items-center gap-1 shrink-0 text-[10px] font-bold text-amber-700 dark:text-amber-400 hover:underline cursor-pointer focus:outline-none"
+              className="flex items-center gap-1 shrink-0 text-[10px] font-bold text-amber-700 dark:text-amber-400 hover:underline cursor-pointer focus:outline-none focus:ring-2 focus:ring-green-600 focus:ring-offset-2 rounded"
               aria-label="Retry last message"
             >
               <RefreshCw className="h-3 w-3" />
@@ -244,7 +248,7 @@ export function ChatPanel({
                   key={chip}
                   onClick={() => handleChipSend(chip)}
                   disabled={isLoading}
-                  className="text-[11px] font-medium bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-300 rounded-full px-3 py-1 hover:border-emerald-400 hover:text-emerald-700 dark:hover:border-emerald-600 dark:hover:text-emerald-400 transition-colors cursor-pointer select-none focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 disabled:opacity-50"
+                  className="text-[11px] font-medium bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-300 rounded-full px-3 py-1 hover:border-emerald-400 hover:text-emerald-700 dark:hover:border-emerald-600 dark:hover:text-emerald-400 transition-colors cursor-pointer select-none focus:outline-none focus:ring-2 focus:ring-green-600 focus:ring-offset-2 disabled:opacity-50"
                 >
                   {chip}
                 </button>
@@ -263,7 +267,7 @@ export function ChatPanel({
                   key={cfg.id}
                   onClick={() => onRunWhatIf(cfg.id)}
                   disabled={isLoading}
-                  className="text-[11px] font-medium bg-blue-50 dark:bg-blue-950/20 border border-blue-200 dark:border-blue-800/60 text-blue-700 dark:text-blue-400 rounded-full px-3 py-1 hover:bg-blue-100 dark:hover:bg-blue-950/40 hover:border-blue-400 transition-colors cursor-pointer select-none focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 disabled:opacity-50"
+                  className="text-[11px] font-medium bg-blue-50 dark:bg-blue-950/20 border border-blue-200 dark:border-blue-800/60 text-blue-700 dark:text-blue-400 rounded-full px-3 py-1 hover:bg-blue-100 dark:hover:bg-blue-950/40 hover:border-blue-400 transition-colors cursor-pointer select-none focus:outline-none focus:ring-2 focus:ring-green-600 focus:ring-offset-2 disabled:opacity-50"
                 >
                   {cfg.emoji} {cfg.label}
                 </button>
@@ -276,26 +280,31 @@ export function ChatPanel({
       {/* ── Input bar ── */}
       <form
         onSubmit={handleSend}
-        className="flex items-center gap-2 p-3 border-t border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 shrink-0"
+        className="flex flex-col gap-2 p-3 border-t border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 shrink-0"
       >
-        <input
-          type="text"
-          value={input}
-          onChange={(e) => setInput(e.target.value)}
-          placeholder="Ask about your data, request simulations…"
-          disabled={isLoading}
-          maxLength={500}
-          aria-label="Message input"
-          className="flex-1 h-10 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 px-3 py-2 text-sm text-gray-900 dark:text-gray-100 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-        />
-        <button
-          type="submit"
-          disabled={isLoading || !input.trim()}
-          aria-label="Send message"
-          className="h-10 w-10 shrink-0 flex items-center justify-center rounded-lg bg-emerald-600 hover:bg-emerald-700 active:scale-95 text-white transition-all disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 focus-visible:ring-offset-2"
-        >
-          <Send className="h-4 w-4" />
-        </button>
+        <label htmlFor="chat-message-input" className="text-xs font-semibold text-gray-500 dark:text-gray-400">
+          Ask AI Coach
+        </label>
+        <div className="flex items-center gap-2">
+          <input
+            id="chat-message-input"
+            type="text"
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+            placeholder="Ask about your data, request simulations…"
+            disabled={isLoading}
+            maxLength={500}
+            className="flex-1 h-10 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 px-3 py-2 text-sm text-gray-900 dark:text-gray-100 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-green-600 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+          />
+          <button
+            type="submit"
+            disabled={isLoading || !input.trim()}
+            aria-label="Send message"
+            className="h-10 w-10 shrink-0 flex items-center justify-center rounded-lg bg-emerald-600 hover:bg-emerald-700 active:scale-95 text-white transition-all disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer focus:outline-none focus:ring-2 focus:ring-green-600 focus:ring-offset-2"
+          >
+            <Send className="h-4 w-4" />
+          </button>
+        </div>
       </form>
     </div>
   );

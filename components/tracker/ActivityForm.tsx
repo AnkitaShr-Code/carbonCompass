@@ -82,39 +82,49 @@ export function ActivityForm({ onAddActivity }: ActivityFormProps) {
       <CardContent>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-1.5">
-            <label className="text-sm font-semibold text-gray-700 dark:text-gray-300">Category</label>
+            <label htmlFor="tracker-category" className="text-sm font-semibold text-gray-700 dark:text-gray-300">Category</label>
             <Select
+              id="tracker-category"
               options={categoryOptions}
               value={category}
               onChange={(e) => handleCategoryChange(e.target.value as any)}
+              className="focus:outline-none focus:ring-2 focus:ring-green-600 focus:ring-offset-2"
             />
           </div>
 
           <div className="space-y-1.5">
-            <label className="text-sm font-semibold text-gray-700 dark:text-gray-300">Subtype</label>
+            <label htmlFor="tracker-subtype" className="text-sm font-semibold text-gray-700 dark:text-gray-300">Subtype</label>
             <Select
+              id="tracker-subtype"
               options={getSubtypeOptions(category)}
               value={subtype}
               onChange={(e) => setSubtype(e.target.value)}
+              className="focus:outline-none focus:ring-2 focus:ring-green-600 focus:ring-offset-2"
             />
           </div>
 
           <div className="space-y-1.5">
-            <label className="text-sm font-semibold text-gray-700 dark:text-gray-300">
+            <label htmlFor="tracker-quantity" className="text-sm font-semibold text-gray-700 dark:text-gray-300">
               Quantity ({currentUnit})
             </label>
             <Input
+              id="tracker-quantity"
               type="number"
               step="any"
               value={quantity}
               onChange={(e) => setQuantity(e.target.value)}
               placeholder={`Quantity in ${currentUnit}`}
+              className="focus:outline-none focus:ring-2 focus:ring-green-600 focus:ring-offset-2"
               required
             />
           </div>
 
           {errorMsgs.length > 0 && (
-            <div className="rounded-md bg-red-50 p-3 text-sm text-red-800 dark:bg-red-950/40 dark:text-red-300">
+            <div 
+              role="alert" 
+              aria-live="assertive"
+              className="rounded-md bg-red-50 p-3 text-sm text-red-800 dark:bg-red-950/40 dark:text-red-300"
+            >
               <ul className="list-disc pl-5">
                 {errorMsgs.map((err, i) => (
                   <li key={i}>{err}</li>
@@ -124,7 +134,11 @@ export function ActivityForm({ onAddActivity }: ActivityFormProps) {
           )}
 
           {successMsg && (
-            <div className="rounded-md bg-emerald-50 p-3 text-sm text-emerald-800 dark:bg-emerald-950/40 dark:text-emerald-300">
+            <div 
+              role="status" 
+              aria-live="polite"
+              className="rounded-md bg-emerald-50 p-3 text-sm text-emerald-800 dark:bg-emerald-950/40 dark:text-emerald-300"
+            >
               {successMsg}
             </div>
           )}

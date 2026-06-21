@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, useCallback, useRef } from "react";
+import React, { useState, useEffect, useCallback, useRef, useMemo } from "react";
 import { useCarbonTracker } from "../../hooks/useCarbonTracker";
 import { CategoryBarChart } from "../../components/dashboard/CategoryBarChart";
 import { TrendLineChart } from "../../components/dashboard/TrendLineChart";
@@ -32,6 +32,7 @@ import {
   BarChart3,
   Leaf,
   Info,
+  Sparkles,
 } from "lucide-react";
 import Link from "next/link";
 
@@ -83,14 +84,17 @@ function getSubtypeLabel(category: string, subtype: string): string {
 
 function useCountUp(target: number, durationMs = 800): number {
   const [value, setValue] = useState(0);
+  const valueRef = useRef(0);
   const rafRef = useRef<number>(0);
   const startRef = useRef<number | null>(null);
-  const prevTarget = useRef(0);
 
   useEffect(() => {
-    if (target === prevTarget.current) return;
-    const from = prevTarget.current;
-    prevTarget.current = target;
+    valueRef.current = value;
+  }, [value]);
+
+  useEffect(() => {
+    if (target === valueRef.current) return;
+    const from = valueRef.current;
     startRef.current = null;
 
     const animate = (ts: number) => {
@@ -98,7 +102,8 @@ function useCountUp(target: number, durationMs = 800): number {
       const elapsed = ts - startRef.current;
       const prog = Math.min(elapsed / durationMs, 1);
       const eased = 1 - Math.pow(1 - prog, 3);
-      setValue(parseFloat((from + (target - from) * eased).toFixed(3)));
+      const nextVal = parseFloat((from + (target - from) * eased).toFixed(3));
+      setValue(nextVal);
       if (prog < 1) {
         rafRef.current = requestAnimationFrame(animate);
       } else {
@@ -254,6 +259,16 @@ function CompassScoreCard({
             <p className="text-xs text-gray-500 dark:text-gray-400 mt-2 max-w-sm leading-relaxed">
               Based on your emissions vs. 1.5°C budget, logging streak, and tracking coverage across all 5 categories.
             </p>
+            {/* AI coach nudge when score is low */}
+            {score < 50 && (
+              <Link
+                href="/insights"
+                className="mt-3 inline-flex items-center gap-1.5 text-xs font-bold text-amber-600 dark:text-amber-400 hover:underline focus:outline-none focus:ring-2 focus:ring-amber-500 rounded"
+              >
+                <Sparkles className="h-3.5 w-3.5" aria-hidden="true" />
+                Score dropping? Ask the AI coach for help →
+              </Link>
+            )}
           </div>
         </div>
       </CardContent>
@@ -340,7 +355,6 @@ export default function DashboardPage() {
   // Show banner when no activities OR no profile setup
   const showBanner = isLoaded && (activities.length === 0 || !profile.setupComplete);
 
-  // Date ranges
   const now = new Date();
   const todayStart = new Date(now); todayStart.setHours(0, 0, 0, 0);
   const todayEnd = new Date(now); todayEnd.setHours(23, 59, 59, 999);
@@ -348,22 +362,36 @@ export default function DashboardPage() {
   const monthStart = new Date(now); monthStart.setDate(1); monthStart.setHours(0, 0, 0, 0);
   const farFuture = new Date(now.getTime() + 5 * 365 * 24 * 3600 * 1000);
 
-  const todayKg = getTotalForPeriod(activities, todayStart, todayEnd);
-  const weekKg = getTotalForPeriod(activities, weekStart, farFuture);
-  const monthKg = getTotalForPeriod(activities, monthStart, farFuture);
-  const weekCatBreakdown = getCategoryBreakdown(activities, weekStart, farFuture);
+  // Memoized stats calculations
+  const { todayKg, weekKg, monthKg, weekCatBreakdown, biggestCatName, biggestCatVal, streak, compassScore, budgetDiff, budgetIsGood } = useMemo(() => {
+    const today = getTotalForPeriod(activities, todayStart, todayEnd);
+    const week = getTotalForPeriod(activities, weekStart, farFuture);
+    const month = getTotalForPeriod(activities, monthStart, farFuture);
+    const breakdown = getCategoryBreakdown(activities, weekStart, farFuture);
 
-  // Biggest category this week
-  const biggestCat = Object.entries(weekCatBreakdown).sort((a, b) => b[1] - a[1])[0];
-  const biggestCatName = biggestCat ? biggestCat[0] : null;
+    const biggest = Object.entries(breakdown).sort((a, b) => b[1] - a[1])[0];
+    const biggestName = biggest ? biggest[0] : null;
+    const biggestVal = biggest ? biggest[1] : 0;
 
-  // Compass score — use demoLoaded streak of 5 to seed a nice score
-  const streak = demoLoaded ? 5 : Math.min(activities.length > 0 ? 3 : 0, 7);
-  const compassScore = getCompassScore(activities, streak);
+    const computedStreak = demoLoaded ? 5 : Math.min(activities.length > 0 ? 3 : 0, 7);
+    const score = getCompassScore(activities, computedStreak);
 
-  // vs daily budget
-  const budgetDiff = DAILY_BUDGET_1_5C - todayKg;
-  const budgetIsGood = budgetDiff >= 0;
+    const diff = DAILY_BUDGET_1_5C - today;
+    const isGood = diff >= 0;
+
+    return {
+      todayKg: today,
+      weekKg: week,
+      monthKg: month,
+      weekCatBreakdown: breakdown,
+      biggestCatName: biggestName,
+      biggestCatVal: biggestVal,
+      streak: computedStreak,
+      compassScore: score,
+      budgetDiff: diff,
+      budgetIsGood: isGood,
+    };
+  }, [activities, demoLoaded]);
 
   // Activity list (last 15, filtered)
   const filteredActivities = activities
@@ -384,7 +412,12 @@ export default function DashboardPage() {
     if (typeof window === "undefined") return;
     // If we just reloaded after demo seed and activities are present, flag showTour
     const hasData = getActivities().length > 0;
-    const tourDone = localStorage.getItem("carboncompass_tour_done");
+    let tourDone: string | null = null;
+    try {
+      tourDone = localStorage.getItem("carboncompass_tour_done");
+    } catch (e) {
+      console.error(e);
+    }
     if (hasData && !tourDone) {
       setShowTour(true);
     }
@@ -414,9 +447,9 @@ export default function DashboardPage() {
       {/* ── Page header ── */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
         <div>
-          <h2 className="text-2xl font-extrabold tracking-tight text-gray-900 dark:text-white sm:text-3xl">
+          <h1 className="text-2xl font-extrabold tracking-tight text-gray-900 dark:text-white sm:text-3xl">
             {profile.name ? `Welcome back, ${profile.name}` : "Your Dashboard"}
-          </h2>
+          </h1>
           <p className="text-sm text-gray-500 dark:text-gray-400">
             {now.toLocaleDateString(undefined, { weekday: "long", month: "long", day: "numeric" })}
           </p>
@@ -524,7 +557,7 @@ export default function DashboardPage() {
                   <p className="text-xs text-gray-700 dark:text-gray-300 leading-relaxed">
                     Your biggest source this week is{" "}
                     <strong className="capitalize">{biggestCatName}</strong> at{" "}
-                    <strong>{biggestCat![1].toFixed(2)} kg CO₂e</strong>.{" "}
+                    <strong>{biggestCatVal.toFixed(2)} kg CO₂e</strong>.{" "}
                     {suggestMap[biggestCatName]}
                   </p>
                 </div>
@@ -540,7 +573,15 @@ export default function DashboardPage() {
                       </div>
                     ))}
                 </div>
-              </>
+              {/* AI CTA at bottom of the card when data exists */}
+              <Link
+                href="/insights"
+                className="mt-1 inline-flex items-center gap-1.5 text-xs font-bold text-emerald-600 dark:text-emerald-400 hover:underline focus:outline-none focus:ring-2 focus:ring-emerald-500 rounded"
+              >
+                <Sparkles className="h-3.5 w-3.5" aria-hidden="true" />
+                Get AI recommendations →
+              </Link>
+            </>
             ) : (
               <div className="flex flex-col items-center justify-center py-8 text-center text-gray-400 gap-2">
                 <Info className="h-6 w-6 opacity-50" />
@@ -572,9 +613,9 @@ export default function DashboardPage() {
 
       {/* ── Row 4: Equivalence Cards ── */}
       <div>
-        <h3 className="text-sm font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-3">
+        <h2 className="text-sm font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-3">
           This Week's Emissions Equivalent To…
-        </h3>
+        </h2>
         <EquivalenceCards weeklyKg={weekKg} />
       </div>
 

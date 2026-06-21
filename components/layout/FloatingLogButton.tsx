@@ -14,7 +14,7 @@ export function FloatingLogButton() {
   return (
     <Link
       href="/tracker"
-      className="fixed bottom-6 right-6 z-40 flex h-14 w-14 items-center justify-center rounded-full bg-emerald-600 hover:bg-emerald-700 text-white shadow-lg transition-all hover:scale-110 active:scale-95 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 dark:bg-emerald-500 dark:hover:bg-emerald-400 select-none cursor-pointer"
+      className="fixed bottom-6 right-6 z-40 flex h-14 w-14 items-center justify-center rounded-full bg-emerald-600 hover:bg-emerald-700 text-white shadow-lg transition-all hover:scale-110 active:scale-95 focus:outline-none focus:ring-2 focus:ring-green-600 focus:ring-offset-2 dark:bg-emerald-500 dark:hover:bg-emerald-400 select-none cursor-pointer"
       aria-label="Log new activity"
     >
       <Plus className="h-6 w-6 stroke-[2.5]" />

@@ -47,9 +47,10 @@ export function CategoryBarChart({ activities, startDate, endDate }: CategoryBar
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
+    setMounted(false);
     const t = setTimeout(() => setMounted(true), 60);
     return () => clearTimeout(t);
-  }, []);
+  }, [activities]);
 
   const startMs = startDate.getTime();
   const endMs = endDate.getTime();
@@ -109,7 +110,7 @@ export function CategoryBarChart({ activities, startDate, endDate }: CategoryBar
               onMouseLeave={() => setHoveredBar(null)}
               onFocus={() => setHoveredBar(row.cat)}
               onBlur={() => setHoveredBar(null)}
-              className="flex items-center gap-3 focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 focus-visible:ring-offset-1 rounded cursor-default"
+              className="flex items-center gap-3 focus:outline-none focus:ring-2 focus:ring-green-600 focus:ring-offset-2 rounded cursor-default"
             >
               {/* Category label */}
               <span className="w-20 shrink-0 text-xs font-bold text-gray-600 dark:text-gray-400 text-right select-none">

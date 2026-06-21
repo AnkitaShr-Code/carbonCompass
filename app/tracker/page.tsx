@@ -17,7 +17,8 @@ import {
   CheckCircle2,
   Compass,
   ArrowRight,
-  Info
+  Info,
+  Sparkles
 } from "lucide-react";
 import Link from "next/link";
 
@@ -328,6 +329,14 @@ export default function TrackerPage() {
                       </Button>
                     </Link>
                   </div>
+                  {/* Third CTA — route user to AI insights */}
+                  <Link
+                    href="/insights"
+                    className="inline-flex items-center gap-1.5 text-sm font-bold text-emerald-600 dark:text-emerald-400 hover:underline focus:outline-none focus:ring-2 focus:ring-emerald-500 rounded mt-1"
+                  >
+                    <Sparkles className="h-4 w-4" aria-hidden="true" />
+                    Get insights on this →
+                  </Link>
                 </div>
               )}
             </CardContent>

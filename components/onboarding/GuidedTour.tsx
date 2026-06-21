@@ -123,7 +123,12 @@ export function GuidedTour() {
   useEffect(() => {
     // Only show if tour hasn't been done
     if (typeof window === "undefined") return;
-    if (localStorage.getItem(TOUR_KEY)) return;
+    try {
+      if (localStorage.getItem(TOUR_KEY)) return;
+    } catch (e) {
+      console.error(e);
+      return;
+    }
     // Small delay to let DOM paint
     const t = setTimeout(() => {
       setVisible(true);
@@ -144,7 +149,11 @@ export function GuidedTour() {
   }, [visible, step, updatePosition]);
 
   const dismiss = useCallback(() => {
-    localStorage.setItem(TOUR_KEY, "1");
+    try {
+      localStorage.setItem(TOUR_KEY, "1");
+    } catch (e) {
+      console.error(e);
+    }
     setVisible(false);
   }, []);
 

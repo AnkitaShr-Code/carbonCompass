@@ -8,7 +8,7 @@ interface CarbonChartProps {
   dailyBudget: number;
 }
 
-export function CarbonChart({
+export const CarbonChart = React.memo(function CarbonChart({
   emissionsByCategory,
   totalEmissions,
   dailyBudget,
@@ -88,7 +88,7 @@ export function CarbonChart({
       <div className="flex flex-col items-center justify-center rounded-lg border border-gray-200 bg-white p-5 shadow-sm dark:border-gray-800 dark:bg-gray-900">
         <h4 className="text-base font-bold text-gray-900 dark:text-white self-start mb-4">Daily Budget Utilization</h4>
         <div className="relative flex items-center justify-center">
-          <svg className="h-36 w-36 transform -rotate-90">
+          <svg viewBox="0 0 144 144" role="img" aria-label="Daily carbon budget utilization gauge" className="w-full max-w-[144px] h-auto transform -rotate-90">
             {/* Background circle */}
             <circle
               cx="72"
@@ -129,4 +129,4 @@ export function CarbonChart({
       </div>
     </div>
   );
-}
+});

@@ -300,7 +300,7 @@ export function OnboardingWizard() {
                     value={name}
                     onChange={(e) => setName(e.target.value)}
                     placeholder="Enter name or nickname"
-                    className="flex h-10 w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-100"
+                    className="flex h-10 w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-600 focus:ring-offset-2 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-100"
                   />
                 </div>
 
@@ -316,7 +316,7 @@ export function OnboardingWizard() {
                     tabIndex={getTabIndex(1)}
                     value={country}
                     onChange={(e) => setCountry(e.target.value as any)}
-                    className="flex h-10 w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-100"
+                    className="flex h-10 w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-600 focus:ring-offset-2 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-100"
                   >
                     <option value="usa">🇺🇸 United States</option>
                     <option value="uk">🇬🇧 United Kingdom</option>
