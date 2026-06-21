@@ -61,8 +61,8 @@ function BadgeCard({ status, def }: { status: BadgeStatus; def: typeof BADGES[0]
     <div
       className={`relative rounded-2xl border p-5 flex flex-col gap-3 transition-all duration-300 ${
         status.unlocked
-          ? `${colors.border} bg-white dark:bg-gray-900 scale-[1.02] shadow-lg ${colors.ring}`
-          : "border-gray-200 dark:border-gray-800 bg-gray-50 dark:bg-gray-900/50 grayscale opacity-55"
+          ? `${colors.border} bg-white dark:bg-gray-800 scale-[1.02] shadow-lg ${colors.ring}`
+          : "border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800/50 grayscale opacity-55 dark:opacity-40"
       }`}
       style={
         status.unlocked
@@ -107,10 +107,10 @@ function BadgeCard({ status, def }: { status: BadgeStatus; def: typeof BADGES[0]
 
       {/* Name & description */}
       <div>
-        <p className={`text-sm font-bold ${status.unlocked ? "text-gray-900 dark:text-white" : "text-gray-500 dark:text-gray-400"}`}>
+        <p className={`text-sm font-bold ${status.unlocked ? "text-gray-900 dark:text-white" : "text-gray-500 dark:text-gray-300"}`}>
           {status.name}
         </p>
-        <p className="text-[11px] text-gray-500 dark:text-gray-400 mt-0.5 leading-snug">
+        <p className="text-[11px] text-gray-500 dark:text-gray-300 mt-0.5 leading-snug">
           {status.description}
         </p>
       </div>
@@ -124,7 +124,7 @@ function BadgeCard({ status, def }: { status: BadgeStatus; def: typeof BADGES[0]
               style={{ width: `${status.progress}%` }}
             />
           </div>
-          <p className="text-[10px] text-gray-400 mt-1">{status.progress}% complete</p>
+          <p className="text-[10px] text-gray-400 dark:text-gray-300 mt-1">{status.progress}% complete</p>
         </div>
       )}
     </div>
@@ -170,7 +170,7 @@ function WeeklyGoalSection({
         <div className="flex items-center gap-3 flex-wrap">
           <label
             htmlFor="weekly-target-input"
-            className="text-xs font-bold text-gray-600 dark:text-gray-400 shrink-0"
+            className="text-xs font-bold text-gray-600 dark:text-gray-300 shrink-0"
           >
             Weekly target (kg CO₂e):
           </label>
@@ -187,7 +187,7 @@ function WeeklyGoalSection({
             className="w-24 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 px-3 py-1.5 text-sm font-bold text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-500 text-center"
             aria-label="Weekly target in kg CO₂e"
           />
-          <span className="text-[10px] text-gray-400">
+          <span className="text-[10px] text-gray-400 dark:text-gray-300">
             (1.5°C budget = {(DAILY_BUDGET_1_5C * 7).toFixed(0)} kg/week)
           </span>
         </div>
@@ -248,7 +248,7 @@ function StreakSection({ streak, loggedToday }: { streak: number; loggedToday: b
             <p className="text-lg font-bold text-gray-700 dark:text-gray-300">
               {streak === 1 ? "day" : "days"}
             </p>
-            <p className="text-xs text-gray-500 dark:text-gray-400">current streak</p>
+            <p className="text-xs text-gray-500 dark:text-gray-300">current streak</p>
           </div>
         </div>
 
@@ -277,7 +277,7 @@ function StreakSection({ streak, loggedToday }: { streak: number; loggedToday: b
         )}
 
         {streak === 0 && (
-          <p className="text-xs text-gray-500 dark:text-gray-400 text-center">
+          <p className="text-xs text-gray-500 dark:text-gray-300 text-center">
             Log an activity today to start your streak 🌱
           </p>
         )}
@@ -445,7 +445,7 @@ export default function GoalsPage() {
       <div className="flex h-[50vh] items-center justify-center">
         <div className="text-center">
           <div className="h-8 w-8 animate-spin rounded-full border-4 border-emerald-500 border-t-transparent mx-auto" />
-          <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">
+          <p className="mt-2 text-sm text-gray-500 dark:text-gray-300">
             Loading goals & achievements…
           </p>
         </div>
@@ -479,7 +479,7 @@ export default function GoalsPage() {
         <h2 className="text-2xl font-extrabold tracking-tight text-gray-900 dark:text-white sm:text-3xl">
           Goals & Achievements
         </h2>
-        <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
+        <p className="text-sm text-gray-500 dark:text-gray-300 mt-1">
           Track your weekly target, streak, and badge progress
         </p>
       </div>
@@ -559,7 +559,7 @@ export default function GoalsPage() {
                     </div>
                   ))}
                 </div>
-                <p className="text-xs text-gray-500 dark:text-gray-400">
+                <p className="text-xs text-gray-500 dark:text-gray-300">
                   {committedActions.length} of 3 recommended actions committed
                 </p>
                 {committedActions.length >= 3 && (
@@ -574,7 +574,7 @@ export default function GoalsPage() {
                   className="h-7 w-7 mx-auto text-gray-300 dark:text-gray-600 mb-2"
                   aria-hidden="true"
                 />
-                <p className="text-xs text-gray-500 dark:text-gray-400 mb-3">
+                <p className="text-xs text-gray-500 dark:text-gray-300 mb-3">
                   No actions committed yet.
                 </p>
                 <Link

@@ -77,7 +77,7 @@ export function InsightCard({ response, committedActions, onCommit, onUncommit }
               className={`rounded-xl border p-3.5 transition-all ${
                 isCommitted
                   ? "border-emerald-300 bg-emerald-50/60 dark:border-emerald-700 dark:bg-emerald-950/20"
-                  : "border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-800/50"
+                  : "border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-800"
               }`}
             >
               <div className="flex items-start justify-between gap-2 mb-1.5">
@@ -89,7 +89,7 @@ export function InsightCard({ response, committedActions, onCommit, onUncommit }
                 )}
               </div>
 
-              <p className="text-xs text-gray-600 dark:text-gray-400 leading-relaxed mb-2.5">
+              <p className="text-xs text-gray-600 dark:text-gray-300 leading-relaxed mb-2.5">
                 {action.description}
               </p>
 
@@ -162,21 +162,21 @@ export function WhatIfCard({ result, onCommit, committedActions }: WhatIfCardPro
           ⚡ What-If Simulation
         </p>
         <div className="flex items-center gap-2 text-sm font-bold text-gray-900 dark:text-white">
-          <span className="text-gray-500 dark:text-gray-400">{result.fromLabel}</span>
+          <span className="text-gray-500 dark:text-gray-300">{result.fromLabel}</span>
           <ArrowRight className="h-4 w-4 text-blue-500 shrink-0" />
           <span className="text-blue-700 dark:text-blue-300">{result.toLabel}</span>
         </div>
       </div>
 
       <div className="rounded-lg bg-white dark:bg-gray-800 border border-blue-100 dark:border-blue-900/50 p-3 space-y-1.5">
-        <p className="text-xs text-gray-600 dark:text-gray-400">
+        <p className="text-xs text-gray-600 dark:text-gray-350">
           Based on your last 7 days of tracked activity:
         </p>
         <p className="text-xl font-black text-emerald-600 dark:text-emerald-400">
           Save {result.savingKgPerWeek.toFixed(2)} kg CO₂e/week
         </p>
         {result.equivalentTrees > 0 && (
-          <p className="text-xs text-gray-500 dark:text-gray-400 flex items-center gap-1">
+          <p className="text-xs text-gray-500 dark:text-gray-300 flex items-center gap-1">
             <TreePine className="h-3.5 w-3.5 text-emerald-500" aria-hidden="true" />
             ≈ {result.equivalentTrees} tree{result.equivalentTrees !== 1 ? "s" : ""} absorbing CO₂ for a year
           </p>

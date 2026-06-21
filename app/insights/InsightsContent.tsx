@@ -64,7 +64,7 @@ function CommittedActionsPanel({
         )}
 
         {committedActions.length === 0 ? (
-          <p className="text-xs text-gray-400 dark:text-gray-500 italic">
+          <p className="text-xs text-gray-400 dark:text-gray-300 italic">
             No actions committed yet. Click "Commit to this" on any AI recommendation.
           </p>
         ) : (
@@ -81,7 +81,7 @@ function CommittedActionsPanel({
                 <span className="flex-1 leading-relaxed">{action}</span>
                 <button
                   onClick={() => onUncommit(action)}
-                  className="text-[10px] text-gray-400 hover:text-red-500 dark:hover:text-red-400 transition-colors cursor-pointer focus:outline-none shrink-0"
+                  className="text-[10px] text-gray-400 dark:text-gray-300 hover:text-red-500 dark:hover:text-red-400 transition-colors cursor-pointer focus:outline-none shrink-0"
                   aria-label={`Remove commitment: ${action}`}
                 >
                   ✕
@@ -143,7 +143,7 @@ export default function InsightsContent() {
       <div className="flex h-[60vh] items-center justify-center animate-pulse">
         <div className="text-center">
           <div className="h-8 w-8 animate-spin rounded-full border-4 border-emerald-500 border-t-transparent mx-auto" />
-          <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">Booting AI Coach…</p>
+          <p className="mt-2 text-sm text-gray-500 dark:text-gray-300">Booting AI Coach…</p>
         </div>
       </div>
     );
@@ -156,7 +156,7 @@ export default function InsightsContent() {
         <h1 className="text-2xl font-extrabold tracking-tight text-gray-900 dark:text-white sm:text-3xl">
           AI Sustainability Coach
         </h1>
-        <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
+        <p className="text-sm text-gray-500 dark:text-gray-300 mt-1">
           Personalized insights powered by Google Gemini · Pre-calculated savings via your real data
         </p>
       </div>
@@ -165,19 +165,19 @@ export default function InsightsContent() {
       <div className="grid grid-cols-3 gap-3">
         <Card className="border-l-4 border-l-emerald-500">
           <CardContent className="pt-4 pb-4">
-            <p className="text-[10px] font-bold uppercase tracking-wider text-gray-400">
+            <p className="text-[10px] font-bold uppercase tracking-wider text-gray-400 dark:text-gray-300">
               This Week
             </p>
             <p className="mt-1 text-xl font-black text-gray-900 dark:text-white">
               {weekKg.toFixed(2)}{" "}
-              <span className="text-xs font-semibold text-gray-400">kg CO₂e</span>
+              <span className="text-xs font-semibold text-gray-400 dark:text-gray-300">kg CO₂e</span>
             </p>
           </CardContent>
         </Card>
 
         <Card className="border-l-4 border-l-amber-500">
           <CardContent className="pt-4 pb-4">
-            <p className="text-[10px] font-bold uppercase tracking-wider text-gray-400">
+            <p className="text-[10px] font-bold uppercase tracking-wider text-gray-400 dark:text-gray-300">
               Top Category
             </p>
             <p className="mt-1 text-sm font-bold text-gray-900 dark:text-white capitalize truncate">
@@ -190,7 +190,7 @@ export default function InsightsContent() {
           className={`border-l-4 ${budgetGood ? "border-l-emerald-500" : "border-l-red-500"}`}
         >
           <CardContent className="pt-4 pb-4">
-            <p className="text-[10px] font-bold uppercase tracking-wider text-gray-400">
+            <p className="text-[10px] font-bold uppercase tracking-wider text-gray-400 dark:text-gray-300">
               vs. Daily Budget
             </p>
             <div
@@ -246,7 +246,7 @@ export default function InsightsContent() {
                 How it works
               </CardTitle>
             </CardHeader>
-            <CardContent className="space-y-3 text-xs text-gray-600 dark:text-gray-400">
+            <CardContent className="space-y-3 text-xs text-gray-650 dark:text-gray-300">
               <div className="space-y-1">
                 <h2 className="font-bold text-gray-800 dark:text-gray-200 text-xs">🔢 Math first, AI second</h2>
                 <p className="leading-relaxed">

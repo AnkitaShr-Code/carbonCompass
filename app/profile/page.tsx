@@ -16,7 +16,7 @@ export default function ProfilePage() {
       <div className="flex h-[50vh] items-center justify-center">
         <div className="text-center">
           <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary-500 border-t-transparent mx-auto" />
-          <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">Loading profile data...</p>
+          <p className="mt-2 text-sm text-gray-500 dark:text-gray-300">Loading profile data...</p>
         </div>
       </div>
     );
@@ -102,7 +102,7 @@ export default function ProfilePage() {
         <h2 className="text-2xl font-extrabold tracking-tight text-gray-900 dark:text-white sm:text-3xl">
           User Settings & Profile
         </h2>
-        <p className="text-sm text-gray-500 dark:text-gray-400">
+        <p className="text-sm text-gray-500 dark:text-gray-300">
           View your environmental profile and overall CarbonCompass score.
         </p>
       </div>
@@ -162,7 +162,7 @@ export default function ProfilePage() {
                 <span className="text-[10px] uppercase font-bold text-gray-455 block">Compass Score Rating</span>
                 <span className="text-lg font-black text-gray-950 dark:text-white flex items-center gap-1.5">
                   {compassScore.score}
-                  <span className="text-xs font-semibold text-gray-500 dark:text-gray-400">
+                  <span className="text-xs font-semibold text-gray-500 dark:text-gray-300">
                     ({compassScore.direction})
                   </span>
                 </span>

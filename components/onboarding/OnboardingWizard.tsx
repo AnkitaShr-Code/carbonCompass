@@ -204,7 +204,7 @@ export function OnboardingWizard() {
                 >
                   Track your carbon footprint in 60 seconds a day
                 </h3>
-                <p className="text-sm text-gray-500 dark:text-gray-400">
+                <p className="text-sm text-gray-500 dark:text-gray-300">
                   CarbonCompass helps you navigate your path to lower emissions with AI insights and simple daily logs.
                 </p>
               </div>
@@ -334,7 +334,7 @@ export function OnboardingWizard() {
                         />
                         <label
                           htmlFor={`life-${opt}`}
-                          className="flex flex-col items-center justify-center p-3 text-xs font-semibold rounded-lg border border-gray-200 bg-white cursor-pointer hover:bg-gray-50 peer-checked:border-primary-500 peer-checked:bg-primary-50 peer-checked:text-primary-850 dark:border-gray-800 dark:bg-gray-850 dark:hover:bg-gray-800 dark:peer-checked:border-primary-500 dark:peer-checked:bg-primary-950/40 dark:peer-checked:text-primary-200 transition-all text-center"
+                          className="flex flex-col items-center justify-center p-3 text-xs font-semibold rounded-lg border border-gray-200 bg-white cursor-pointer hover:bg-gray-50 peer-checked:border-primary-500 peer-checked:bg-primary-50 peer-checked:text-primary-850 dark:bg-gray-800 dark:border-gray-600 dark:text-gray-100 dark:hover:bg-gray-700 dark:peer-checked:border-green-500 dark:peer-checked:bg-green-900/50 dark:peer-checked:text-green-300 transition-all text-center"
                         >
                           <span className="capitalize">{opt}</span>
                         </label>
@@ -396,7 +396,7 @@ export function OnboardingWizard() {
                         />
                         <label
                           htmlFor={`commute-${opt.key}`}
-                          className="flex items-center justify-center px-2 py-2 text-xs font-semibold rounded-lg border border-gray-200 bg-white cursor-pointer hover:bg-gray-50 peer-checked:border-primary-500 peer-checked:bg-primary-50 peer-checked:text-primary-850 dark:border-gray-800 dark:bg-gray-850 dark:hover:bg-gray-800 dark:peer-checked:border-primary-500 dark:peer-checked:bg-primary-950/40 dark:peer-checked:text-primary-200 transition-all"
+                          className="flex items-center justify-center px-2 py-2 text-xs font-semibold rounded-lg border border-gray-200 bg-white cursor-pointer hover:bg-gray-50 peer-checked:border-primary-500 peer-checked:bg-primary-50 peer-checked:text-primary-850 dark:bg-gray-800 dark:border-gray-600 dark:text-gray-100 dark:hover:bg-gray-700 dark:peer-checked:border-green-500 dark:peer-checked:bg-green-900/50 dark:peer-checked:text-green-300 transition-all"
                         >
                           {opt.label}
                         </label>
@@ -430,7 +430,7 @@ export function OnboardingWizard() {
                         />
                         <label
                           htmlFor={`diet-${opt.key}`}
-                          className="flex items-center justify-center px-2 py-2 text-xs font-semibold rounded-lg border border-gray-200 bg-white cursor-pointer hover:bg-gray-50 peer-checked:border-primary-500 peer-checked:bg-primary-50 peer-checked:text-primary-850 dark:border-gray-800 dark:bg-gray-850 dark:hover:bg-gray-800 dark:peer-checked:border-primary-500 dark:peer-checked:bg-primary-950/40 dark:peer-checked:text-primary-200 transition-all"
+                          className="flex items-center justify-center px-2 py-2 text-xs font-semibold rounded-lg border border-gray-200 bg-white cursor-pointer hover:bg-gray-50 peer-checked:border-primary-500 peer-checked:bg-primary-50 peer-checked:text-primary-850 dark:bg-gray-800 dark:border-gray-600 dark:text-gray-100 dark:hover:bg-gray-700 dark:peer-checked:border-green-500 dark:peer-checked:bg-green-900/50 dark:peer-checked:text-green-300 transition-all"
                         >
                           {opt.label}
                         </label>
@@ -463,7 +463,7 @@ export function OnboardingWizard() {
                         />
                         <label
                           htmlFor={`energy-${opt.key}`}
-                          className="flex flex-col items-center justify-center p-2 text-[10px] font-bold rounded-lg border border-gray-200 bg-white cursor-pointer hover:bg-gray-50 peer-checked:border-primary-500 peer-checked:bg-primary-50 peer-checked:text-primary-850 dark:border-gray-800 dark:bg-gray-850 dark:hover:bg-gray-800 dark:peer-checked:border-primary-500 dark:peer-checked:bg-primary-950/40 dark:peer-checked:text-primary-200 transition-all text-center"
+                          className="flex flex-col items-center justify-center p-2 text-[10px] font-bold rounded-lg border border-gray-200 bg-white cursor-pointer hover:bg-gray-50 peer-checked:border-primary-500 peer-checked:bg-primary-50 peer-checked:text-primary-850 dark:bg-gray-800 dark:border-gray-600 dark:text-gray-100 dark:hover:bg-gray-700 dark:peer-checked:border-green-500 dark:peer-checked:bg-green-900/50 dark:peer-checked:text-green-300 transition-all text-center"
                         >
                           {opt.label}
                         </label>
@@ -583,7 +583,7 @@ export function OnboardingWizard() {
                   You're all set!
                 </h3>
                 
-                <p className="text-sm text-gray-500 dark:text-gray-400 max-w-sm">
+                <p className="text-sm text-gray-500 dark:text-gray-300 max-w-sm">
                   Your profile and baseline are saved. Get ready to log your first carbon activity and start making improvements.
                 </p>
               </div>

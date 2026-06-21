@@ -53,7 +53,7 @@ const CATEGORY_COLORS: Record<Category, string> = {
   food: "text-amber-600 dark:text-amber-400",
   energy: "text-yellow-600 dark:text-yellow-400",
   shopping: "text-purple-600 dark:text-purple-400",
-  waste: "text-gray-500 dark:text-gray-400",
+  waste: "text-gray-500 dark:text-gray-300",
 };
 
 const CATEGORY_BG: Record<Category, string> = {
@@ -138,10 +138,10 @@ function StatCard({
   return (
     <Card className={`border-l-4 ${accent ?? "border-l-primary-500"}`}>
       <CardContent className="pt-5 pb-5">
-        <p className="text-[10px] font-bold uppercase tracking-wider text-gray-400">{label}</p>
+        <p className="text-[10px] font-bold uppercase tracking-wider text-gray-400 dark:text-gray-300">{label}</p>
         <p className="mt-1.5 text-2xl font-black text-gray-900 dark:text-white">
           {animated.toFixed(2)}
-          <span className="text-sm font-semibold text-gray-400 ml-1">{unit}</span>
+          <span className="text-sm font-semibold text-gray-400 dark:text-gray-300 ml-1">{unit}</span>
         </p>
         {sub && <div className="mt-1">{sub}</div>}
       </CardContent>
@@ -241,12 +241,12 @@ function CompassScoreCard({
                 {Math.round(animated)}
               </text>
             </svg>
-            <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">out of 100</span>
+            <span className="text-[10px] font-bold text-gray-400 dark:text-gray-300 uppercase tracking-widest">out of 100</span>
           </div>
 
           {/* Text content */}
           <div className="flex-1 text-center md:text-left">
-            <p className="text-xs font-bold uppercase tracking-wider text-gray-400 mb-1">
+            <p className="text-xs font-bold uppercase tracking-wider text-gray-400 dark:text-gray-300 mb-1">
               🧭 CarbonCompass Score
             </p>
             <p className={`text-5xl font-black ${scoreColor}`}>
@@ -256,7 +256,7 @@ function CompassScoreCard({
             <p className={`text-xl font-bold mt-2 ${scoreColor}`}>
               {label}
             </p>
-            <p className="text-xs text-gray-500 dark:text-gray-400 mt-2 max-w-sm leading-relaxed">
+            <p className="text-xs text-gray-500 dark:text-gray-300 mt-2 max-w-sm leading-relaxed">
               Based on your emissions vs. 1.5°C budget, logging streak, and tracking coverage across all 5 categories.
             </p>
             {/* AI coach nudge when score is low */}
@@ -314,7 +314,7 @@ function DemoBanner({
               Welcome to CarbonCompass!
             </h3>
           </div>
-          <p className="text-xs text-gray-600 dark:text-gray-400 leading-relaxed">
+          <p className="text-xs text-gray-600 dark:text-gray-300 leading-relaxed">
             Click below to load a demo environment with{" "}
             <strong>14 days of realistic activity data</strong>, a simulated 5-day tracking streak,
             and pre-seeded goals — so you can experience the full platform instantly.
@@ -428,7 +428,7 @@ export default function DashboardPage() {
       <div className="flex h-[60vh] items-center justify-center">
         <div className="text-center">
           <div className="h-8 w-8 animate-spin rounded-full border-4 border-emerald-500 border-t-transparent mx-auto" />
-          <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">Loading dashboard…</p>
+          <p className="mt-2 text-sm text-gray-500 dark:text-gray-300">Loading dashboard…</p>
         </div>
       </div>
     );
@@ -450,7 +450,7 @@ export default function DashboardPage() {
           <h1 className="text-2xl font-extrabold tracking-tight text-gray-900 dark:text-white sm:text-3xl">
             {profile.name ? `Welcome back, ${profile.name}` : "Your Dashboard"}
           </h1>
-          <p className="text-sm text-gray-500 dark:text-gray-400">
+          <p className="text-sm text-gray-500 dark:text-gray-300">
             {now.toLocaleDateString(undefined, { weekday: "long", month: "long", day: "numeric" })}
           </p>
         </div>
@@ -561,7 +561,7 @@ export default function DashboardPage() {
                     {suggestMap[biggestCatName]}
                   </p>
                 </div>
-                <div className="text-xs text-gray-500 dark:text-gray-400 space-y-1.5">
+                <div className="text-xs text-gray-500 dark:text-gray-300 space-y-1.5">
                   {Object.entries(weekCatBreakdown)
                     .sort((a, b) => b[1] - a[1])
                     .map(([cat, kg]) => (
@@ -583,7 +583,7 @@ export default function DashboardPage() {
               </Link>
             </>
             ) : (
-              <div className="flex flex-col items-center justify-center py-8 text-center text-gray-400 gap-2">
+              <div className="flex flex-col items-center justify-center py-8 text-center text-gray-400 dark:text-gray-300 gap-2">
                 <Info className="h-6 w-6 opacity-50" />
                 <p className="text-xs">No activities logged this week.</p>
                 <Link href="/tracker" className="text-xs font-bold text-emerald-600 dark:text-emerald-400 hover:underline">
@@ -613,7 +613,7 @@ export default function DashboardPage() {
 
       {/* ── Row 4: Equivalence Cards ── */}
       <div>
-        <h2 className="text-sm font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-3">
+        <h2 className="text-sm font-bold text-gray-500 dark:text-gray-300 uppercase tracking-wider mb-3">
           This Week's Emissions Equivalent To…
         </h2>
         <EquivalenceCards weeklyKg={weekKg} />
@@ -642,7 +642,7 @@ export default function DashboardPage() {
                 <option value="shopping">Shopping</option>
                 <option value="waste">Waste</option>
               </select>
-              <ChevronDown className="pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-gray-400" />
+              <ChevronDown className="pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-gray-400 dark:text-gray-300" />
             </div>
             <Badge variant="outline" className="flex items-center gap-1 shrink-0">
               <Calendar className="h-3 w-3" />
@@ -652,7 +652,7 @@ export default function DashboardPage() {
         </CardHeader>
         <CardContent>
           {filteredActivities.length === 0 ? (
-            <div className="text-center py-12 text-gray-400">
+            <div className="text-center py-12 text-gray-400 dark:text-gray-300">
               <Info className="h-8 w-8 mx-auto stroke-[1.5] mb-2" />
               <p className="text-sm">
                 {activities.length === 0
@@ -669,7 +669,7 @@ export default function DashboardPage() {
             <div className="overflow-x-auto -mx-1">
               <table className="w-full text-left text-sm min-w-[500px]">
                 <thead>
-                  <tr className="border-b border-gray-100 dark:border-gray-800 text-[10px] text-gray-400 uppercase tracking-wider font-bold">
+                  <tr className="border-b border-gray-100 dark:border-gray-700 text-[10px] text-gray-400 dark:text-gray-300 uppercase tracking-wider font-bold">
                     <th className="pb-3 pl-2 pr-2 w-8">Cat.</th>
                     <th className="pb-3 pr-2">Activity</th>
                     <th className="pb-3 pr-2 w-28">Amount</th>
@@ -702,14 +702,14 @@ export default function DashboardPage() {
                           <p className="font-semibold text-gray-800 dark:text-gray-200 text-xs leading-tight">
                             {getSubtypeLabel(act.category, act.subtype)}
                           </p>
-                          <p className="text-[10px] text-gray-400 capitalize">{act.category}</p>
+                          <p className="text-[10px] text-gray-400 dark:text-gray-300 capitalize">{act.category}</p>
                         </td>
                         {/* Amount */}
-                        <td className="py-3 pr-2 text-xs text-gray-600 dark:text-gray-400 font-semibold">
+                        <td className="py-3 pr-2 text-xs text-gray-600 dark:text-gray-300 font-semibold">
                           {act.quantity} {act.unit}
                         </td>
                         {/* Time */}
-                        <td className="py-3 pr-2 text-[11px] text-gray-500 font-semibold">
+                        <td className="py-3 pr-2 text-[11px] text-gray-500 dark:text-gray-300 font-semibold">
                           {relativeTime(act.timestamp)}
                         </td>
                         {/* CO₂e */}
@@ -730,7 +730,7 @@ export default function DashboardPage() {
                               <span className="text-gray-300 dark:text-gray-600">/</span>
                               <button
                                 onClick={() => setConfirmDeleteId(null)}
-                                className="text-[10px] text-gray-500 hover:text-gray-800 dark:hover:text-gray-200 cursor-pointer focus:outline-none"
+                               className="text-[10px] text-gray-500 dark:text-gray-300 hover:text-gray-800 dark:hover:text-gray-200 cursor-pointer focus:outline-none"
                               >
                                 No
                               </button>

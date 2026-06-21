@@ -113,7 +113,7 @@ export function CategoryBarChart({ activities, startDate, endDate }: CategoryBar
               className="flex items-center gap-3 focus:outline-none focus:ring-2 focus:ring-green-600 focus:ring-offset-2 rounded cursor-default"
             >
               {/* Category label */}
-              <span className="w-20 shrink-0 text-xs font-bold text-gray-600 dark:text-gray-400 text-right select-none">
+              <span className="w-20 shrink-0 text-xs font-bold text-gray-600 dark:text-gray-300 text-right select-none">
                 {row.config.label}
               </span>
 

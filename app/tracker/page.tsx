@@ -47,7 +47,7 @@ export default function TrackerPage() {
       <div className="flex h-[50vh] items-center justify-center">
         <div className="text-center">
           <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary-500 border-t-transparent mx-auto" />
-          <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">Loading tracker...</p>
+          <p className="mt-2 text-sm text-gray-500 dark:text-gray-300">Loading tracker...</p>
         </div>
       </div>
     );
@@ -96,7 +96,7 @@ export default function TrackerPage() {
         <h2 className="text-2xl font-extrabold tracking-tight text-gray-900 dark:text-white sm:text-3xl">
           Carbon Activity Tracker
         </h2>
-        <p className="text-sm text-gray-500 dark:text-gray-400">
+        <p className="text-sm text-gray-500 dark:text-gray-300">
           Log daily activities to estimate and review carbon impact.
         </p>
       </div>
@@ -109,7 +109,7 @@ export default function TrackerPage() {
           {currentStep > 1 && currentStep < 4 && (
             <button
               onClick={goBack}
-              className="flex items-center gap-1 text-xs font-bold text-gray-500 hover:text-gray-950 dark:hover:text-white transition-colors focus:outline-none"
+              className="flex items-center gap-1 text-xs font-bold text-gray-500 dark:text-gray-300 hover:text-gray-950 dark:hover:text-white transition-colors focus:outline-none"
             >
               <ChevronLeft className="h-4 w-4" /> Back to Step {currentStep - 1}
             </button>
@@ -164,8 +164,8 @@ export default function TrackerPage() {
                         aria-pressed={isSelected}
                         className={`flex flex-col items-center justify-center p-4 rounded-xl border cursor-pointer select-none text-center transition-all focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 ${
                           isSelected
-                            ? "border-emerald-500 bg-emerald-50/50 text-emerald-900 dark:border-emerald-400 dark:bg-emerald-950/20 dark:text-emerald-250 border-2"
-                            : "border-gray-200 hover:border-gray-300 bg-white hover:bg-gray-50 dark:border-gray-800 dark:bg-gray-850 dark:hover:bg-gray-800 text-gray-700 dark:text-gray-300"
+                            ? "border-emerald-500 bg-emerald-50/50 text-emerald-900 dark:border-green-500 dark:bg-green-900/50 dark:text-green-300 border-2"
+                            : "border-gray-200 hover:border-gray-300 bg-white hover:bg-gray-50 dark:border-gray-600 dark:bg-gray-800 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-100"
                         }`}
                       >
                         <div className={`p-2.5 rounded-lg mb-3 ${
@@ -193,15 +193,15 @@ export default function TrackerPage() {
                         onClick={() => handleSubtypeCardClick(key)}
                         className={`flex items-center justify-between p-3.5 text-left text-xs font-semibold rounded-lg border transition-all focus:outline-none focus:ring-2 focus:ring-emerald-500 ${
                           isSelected
-                            ? "border-emerald-500 bg-emerald-50/50 text-emerald-900 dark:border-emerald-400 dark:bg-emerald-950/20 dark:text-emerald-200 border-2"
-                            : "border-gray-200 hover:border-gray-300 bg-white hover:bg-gray-50 dark:border-gray-800 dark:bg-gray-850 dark:hover:bg-gray-800 text-gray-700 dark:text-gray-300"
+                            ? "border-emerald-500 bg-emerald-50/50 text-emerald-900 dark:border-green-500 dark:bg-green-900/50 dark:text-green-300 border-2"
+                            : "border-gray-200 hover:border-gray-300 bg-white hover:bg-gray-50 dark:border-gray-600 dark:bg-gray-800 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-100"
                         }`}
                       >
                         <div>
                           <p className="font-bold text-sm text-gray-900 dark:text-white">{info.label}</p>
                           <p className="text-[10px] text-gray-400 mt-0.5">Coefficient: {info.factor} kg / {info.unit}</p>
                         </div>
-                        <span className="text-[10px] bg-gray-100 dark:bg-gray-800 text-gray-500 px-2 py-0.5 rounded font-bold uppercase shrink-0">
+                        <span className="text-[10px] bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-300 px-2 py-0.5 rounded font-bold uppercase shrink-0">
                           per {info.unit}
                         </span>
                       </button>
@@ -228,7 +228,7 @@ export default function TrackerPage() {
                         value={quantity}
                         onChange={(e) => setQuantity(e.target.value)}
                         placeholder={`e.g., Number of ${currentUnit}`}
-                        className={`flex h-11 w-full rounded-md border bg-white pl-3 pr-16 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 dark:bg-gray-850 dark:text-gray-100 ${
+                        className={`flex h-11 w-full rounded-md border bg-white pl-3 pr-16 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 dark:bg-gray-800 dark:text-gray-100 ${
                           isInputInvalid ? "border-red-500 dark:border-red-400" : "border-gray-300 dark:border-gray-700"
                         }`}
                         required
@@ -260,7 +260,7 @@ export default function TrackerPage() {
                       </div>
 
                       {/* Equivalences summary */}
-                      <div className="border-t border-emerald-100/50 dark:border-emerald-900/30 pt-2 text-[10px] text-gray-500 leading-relaxed font-semibold">
+                      <div className="border-t border-emerald-100/50 dark:border-emerald-900/30 pt-2 text-[10px] text-gray-500 dark:text-gray-300 leading-relaxed font-semibold">
                         <span>
                           ≈ {previewEquiv.beefMeals} beef burgers or ≈ {previewEquiv.smartphoneCharges.toLocaleString()} smartphone charges.
                         </span>
@@ -310,7 +310,7 @@ export default function TrackerPage() {
                     <span className="text-2xl font-black text-gray-900 dark:text-white block mt-1">
                       +{lastLogged.co2e.toFixed(2)} kg CO₂e
                     </span>
-                    <span className="text-xs text-gray-500 mt-1 block">
+                    <span className="text-xs text-gray-500 dark:text-gray-300 mt-1 block">
                       Logged from {lastLogged.subtypeLabel}
                     </span>
                   </div>

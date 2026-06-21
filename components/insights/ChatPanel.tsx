@@ -88,7 +88,7 @@ export function ChatPanel({
     messages.length > 0;
 
   return (
-    <div className="flex flex-col h-[680px] rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 shadow-sm overflow-hidden">
+    <div className="flex flex-col h-[680px] rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 shadow-sm overflow-hidden">
       {/* ── Header ── */}
       <div className="flex items-center justify-between px-4 py-3 border-b border-gray-200 dark:border-gray-800 bg-gray-50/60 dark:bg-gray-950/30 shrink-0">
         <div className="flex items-center gap-2.5">
@@ -103,7 +103,7 @@ export function ChatPanel({
                 aria-hidden="true"
               />
             </h4>
-            <p className="text-[10px] text-gray-500 dark:text-gray-400">
+            <p className="text-[10px] text-gray-500 dark:text-gray-300">
               Powered by Google Gemini · Data stays on your device
             </p>
           </div>
@@ -174,7 +174,7 @@ export function ChatPanel({
                     )}
                   </>
                 ) : (
-                  <div className="rounded-xl rounded-tr-sm bg-emerald-600 text-white px-3.5 py-2.5 text-sm leading-relaxed font-medium">
+                  <div className="rounded-xl rounded-tr-sm bg-emerald-600 dark:bg-green-800 text-white dark:text-green-100 px-3.5 py-2.5 text-sm leading-relaxed font-medium">
                     {String(content)}
                   </div>
                 )}
@@ -193,7 +193,7 @@ export function ChatPanel({
               <Brain className="h-4 w-4" aria-hidden="true" />
             </div>
             <div className="rounded-xl rounded-tl-sm bg-gray-100 dark:bg-gray-800 px-4 py-3 flex items-center gap-2">
-              <span className="text-xs text-gray-500 dark:text-gray-400">
+              <span className="text-xs text-gray-500 dark:text-gray-300">
                 CarbonCompass AI is analyzing your data
               </span>
               <span className="flex gap-1" aria-label="Loading">
@@ -248,7 +248,7 @@ export function ChatPanel({
                   key={chip}
                   onClick={() => handleChipSend(chip)}
                   disabled={isLoading}
-                  className="text-[11px] font-medium bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-300 rounded-full px-3 py-1 hover:border-emerald-400 hover:text-emerald-700 dark:hover:border-emerald-600 dark:hover:text-emerald-400 transition-colors cursor-pointer select-none focus:outline-none focus:ring-2 focus:ring-green-600 focus:ring-offset-2 disabled:opacity-50"
+                  className="text-[11px] font-medium bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 text-gray-600 dark:text-gray-200 rounded-full px-3 py-1 hover:border-emerald-400 hover:text-emerald-700 dark:hover:border-emerald-600 dark:hover:text-emerald-400 transition-colors cursor-pointer select-none focus:outline-none focus:ring-2 focus:ring-green-600 focus:ring-offset-2 disabled:opacity-50"
                 >
                   {chip}
                 </button>
@@ -280,9 +280,9 @@ export function ChatPanel({
       {/* ── Input bar ── */}
       <form
         onSubmit={handleSend}
-        className="flex flex-col gap-2 p-3 border-t border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 shrink-0"
+        className="flex flex-col gap-2 p-3 border-t border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 shrink-0"
       >
-        <label htmlFor="chat-message-input" className="text-xs font-semibold text-gray-500 dark:text-gray-400">
+        <label htmlFor="chat-message-input" className="text-xs font-semibold text-gray-500 dark:text-gray-300">
           Ask AI Coach
         </label>
         <div className="flex items-center gap-2">
@@ -294,7 +294,7 @@ export function ChatPanel({
             placeholder="Ask about your data, request simulations…"
             disabled={isLoading}
             maxLength={500}
-            className="flex-1 h-10 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 px-3 py-2 text-sm text-gray-900 dark:text-gray-100 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-green-600 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+            className="flex-1 h-10 rounded-lg border border-gray-200 dark:border-gray-600 bg-gray-50 dark:bg-gray-800 px-3 py-2 text-sm text-gray-900 dark:text-gray-100 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-green-600 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
           />
           <button
             type="submit"

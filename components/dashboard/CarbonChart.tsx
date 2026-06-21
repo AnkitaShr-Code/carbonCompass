@@ -56,7 +56,7 @@ export const CarbonChart = React.memo(function CarbonChart({
   return (
     <div className="grid gap-6 md:grid-cols-2">
       {/* Category Breakdown list */}
-      <div className="rounded-lg border border-gray-200 bg-white p-5 shadow-sm dark:border-gray-800 dark:bg-gray-900">
+      <div className="rounded-lg border border-gray-200 bg-white p-5 shadow-sm dark:border-gray-700 dark:bg-gray-800">
         <h4 className="text-base font-bold text-gray-900 dark:text-white mb-4">Emissions by Category</h4>
         <div className="space-y-4">
           {details.map((item) => (
@@ -85,7 +85,7 @@ export const CarbonChart = React.memo(function CarbonChart({
       </div>
 
       {/* SVG Budget Radial Gauge */}
-      <div className="flex flex-col items-center justify-center rounded-lg border border-gray-200 bg-white p-5 shadow-sm dark:border-gray-800 dark:bg-gray-900">
+      <div className="flex flex-col items-center justify-center rounded-lg border border-gray-200 bg-white p-5 shadow-sm dark:border-gray-700 dark:bg-gray-800">
         <h4 className="text-base font-bold text-gray-900 dark:text-white self-start mb-4">Daily Budget Utilization</h4>
         <div className="relative flex items-center justify-center">
           <svg viewBox="0 0 144 144" role="img" aria-label="Daily carbon budget utilization gauge" className="w-full max-w-[144px] h-auto transform -rotate-90">
@@ -114,7 +114,7 @@ export const CarbonChart = React.memo(function CarbonChart({
             <span className={`text-2xl font-black ${budgetColor}`}>
               {budgetPct}%
             </span>
-            <p className="text-[10px] uppercase font-bold text-gray-400">of daily cap</p>
+            <p className="text-[10px] uppercase font-bold text-gray-400 dark:text-gray-300">of daily cap</p>
           </div>
         </div>
 
@@ -122,7 +122,7 @@ export const CarbonChart = React.memo(function CarbonChart({
           <p className="text-sm font-semibold text-gray-800 dark:text-gray-200">
             Total: <span className="font-bold">{totalEmissions.toFixed(1)} kg</span> CO₂e
           </p>
-          <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
+          <p className="text-xs text-gray-500 dark:text-gray-300 mt-0.5">
             Budget limit is {dailyBudget.toFixed(1)} kg CO₂e per day
           </p>
         </div>

@@ -108,13 +108,13 @@ function EquivalenceCard({ card, value }: { card: CardConfig; value: number }) {
 
   return (
     <div
-      className={`rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 border-l-4 ${card.borderColor} shadow-sm p-5 flex flex-col gap-3 transition-transform hover:-translate-y-0.5 hover:shadow-md`}
+      className={`rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 border-l-4 ${card.borderColor} shadow-sm p-5 flex flex-col gap-3 transition-transform hover:-translate-y-0.5 hover:shadow-md`}
     >
       <div className="flex items-center justify-between">
         <span className={`rounded-lg p-2.5 ${card.iconBg}`}>
           <Icon className={`h-5 w-5 ${card.color}`} strokeWidth={1.8} aria-hidden="true" />
         </span>
-        <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider text-right">
+        <span className="text-[10px] font-bold text-gray-400 dark:text-gray-300 uppercase tracking-wider text-right">
           This Week
         </span>
       </div>
@@ -126,10 +126,10 @@ function EquivalenceCard({ card, value }: { card: CardConfig; value: number }) {
         >
           {display}
         </p>
-        <p className="text-xs text-gray-500 dark:text-gray-400 mt-1 leading-snug">
+        <p className="text-xs text-gray-500 dark:text-gray-300 mt-1 leading-snug">
           {card.label}
         </p>
-        <p className="text-[10px] text-gray-400 dark:text-gray-500 mt-0.5 leading-snug">
+        <p className="text-[10px] text-gray-400 dark:text-gray-300 mt-0.5 leading-snug">
           {card.sublabel}
         </p>
       </div>
