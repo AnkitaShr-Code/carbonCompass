@@ -69,8 +69,9 @@ function daysWithActivity(activities: ActivityEntry[]): Set<number> {
 // ─── calculateStreak ──────────────────────────────────────────────────────────
 
 /**
- * Counts consecutive days (ending today) that have at least 1 logged activity.
- * Pure function — no side effects.
+ * @description Counts consecutive days (ending today) that have at least 1 logged activity.
+ * @param activities - Array of all logged ActivityEntry.
+ * @returns {number} The consecutive days logged streak.
  */
 export function calculateStreak(activities: ActivityEntry[]): number {
   if (activities.length === 0) return 0;
@@ -104,9 +105,9 @@ export interface WeeklyComparison {
 }
 
 /**
- * Compares this week's total vs last week's total.
- * "This week" = last 7 days. "Last week" = days 8–14 ago.
- * changePercent > 0 means more emissions this week (worse).
+ * @description Compares this week's total emissions against last week's total.
+ * @param activities - Array of logged ActivityEntry.
+ * @returns {WeeklyComparison} The WeeklyComparison summary details.
  */
 export function getWeeklyComparison(activities: ActivityEntry[]): WeeklyComparison {
   const now = new Date();
@@ -172,9 +173,9 @@ export function getWeeklyComparison(activities: ActivityEntry[]): WeeklyComparis
 // ─── checkBadges ─────────────────────────────────────────────────────────────
 
 /**
- * Evaluates each badge against the full activity history.
- * Returns a BadgeStatus[] with unlock status + progress 0-100.
- * Pure function — no storage reads or side effects.
+ * @description Evaluates each badge achievement against the full activity history.
+ * @param activities - Array of all logged ActivityEntry.
+ * @returns {BadgeStatus[]} The updated statuses of all badges.
  */
 export function checkBadges(activities: ActivityEntry[]): BadgeStatus[] {
   const now = new Date();

@@ -1,5 +1,38 @@
+/**
+ * @description API Route for generating personalized carbon reduction insights using Google Gemini.
+ * 
+ * Endpoint: POST /api/insights
+ * Request Body Shape:
+ *   {
+ *     message: string;             // User query, up to 500 characters
+ *     context: {                   // User profile and activity data context
+ *       profile: UserProfile;
+ *       recentActivities: ActivityEntry[];
+ *       weeklyTotal: number;
+ *       topCategory: string;
+ *       topSubtype: string;
+ *       categoryBreakdown: Record<string, number>;
+ *       streak: number;
+ *       compassScore: CompassScore;
+ *       potentialSavings: PotentialSaving[];
+ *     }
+ *   }
+ * Response Shape:
+ *   {
+ *     summary: string;             // 2-3 sentence personalized carbon footprint analysis
+ *     actions: InsightAction[];    // Exactly 3 recommended actions
+ *     equivalences: {              // Pre-calculated footprint equivalences
+ *       trees: number;
+ *       flights: number;
+ *       beefMeals: number;
+ *       smartphoneCharges: number;
+ *     }
+ *   }
+ */
+
 import { NextRequest, NextResponse } from "next/server";
 import { GoogleGenerativeAI } from "@google/generative-ai";
+
 import {
   getPotentialSavings,
   getCompassScore,
@@ -9,6 +42,7 @@ import {
 } from "../../../lib/carbonUtils";
 import { sanitizeString } from "../../../lib/sanitize";
 import { ActivityEntry, UserProfile, CompassScore, PotentialSaving, InsightResponse } from "../../../lib/types";
+import { APP_CONSTANTS } from "../../../lib/constants";
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 
@@ -92,52 +126,52 @@ export async function GET() {
 }
 
 export async function POST(req: NextRequest) {
-  // ── Content-Type guard (415 Unsupported Media Type) ────────────────────────
-  const contentType = req.headers.get("content-type") ?? "";
-  if (!contentType.includes("application/json")) {
-    return NextResponse.json(
-      { error: "Unsupported Media Type — application/json required" },
-      { status: 415 }
-    );
-  }
-
-  // ── Body size guard (413 Payload Too Large) ─────────────────────────────────
-  const rawBody = await req.text();
-  if (rawBody.length > 10 * 1024) {
-    return NextResponse.json({ error: "Payload Too Large" }, { status: 413 });
-  }
-
-  let body: { message?: unknown; context?: unknown };
   try {
-    body = JSON.parse(rawBody);
-  } catch {
-    return NextResponse.json({ error: "Invalid request" }, { status: 400 });
-  }
+    // ── Content-Type guard (415 Unsupported Media Type) ────────────────────────
+    const contentType = req.headers.get("content-type") ?? "";
+    if (!contentType.includes("application/json")) {
+      return NextResponse.json(
+        { error: "Unsupported Media Type — application/json required" },
+        { status: 415 }
+      );
+    }
 
-  // Validate message
-  const rawMessage = body.message;
-  if (typeof rawMessage !== "string" || !rawMessage.trim() || rawMessage.length > 500) {
-    return NextResponse.json({ error: "Invalid request" }, { status: 400 });
-  }
-  const message = sanitizeString(rawMessage, 500);
-  if (!message) {
-    return NextResponse.json({ error: "Invalid request" }, { status: 400 });
-  }
+    // ── Body size guard (413 Payload Too Large) ─────────────────────────────────
+    const rawBody = await req.text();
+    if (rawBody.length > APP_CONSTANTS.MAX_PAYLOAD_SIZE_BYTES) {
+      return NextResponse.json({ error: "Payload Too Large" }, { status: 413 });
+    }
 
-  // Validate context
-  const ctx = body.context as UserContext | undefined;
-  if (!ctx || typeof ctx !== "object" || !ctx.profile || !Array.isArray(ctx.recentActivities)) {
-    return NextResponse.json({ error: "Invalid request" }, { status: 400 });
-  }
+    let body: { message?: unknown; context?: unknown };
+    try {
+      body = JSON.parse(rawBody);
+    } catch {
+      return NextResponse.json({ error: "Invalid request" }, { status: 400 });
+    }
 
-  // ── API Key check ──────────────────────────────────────────────────────────
-  const apiKey = process.env.GEMINI_API_KEY;
-  if (!apiKey || apiKey === "your_api_key_here") {
-    return NextResponse.json(NO_KEY_RESPONSE, { status: 200 });
-  }
+    // Validate message
+    const rawMessage = body.message;
+    if (typeof rawMessage !== "string" || !rawMessage.trim() || rawMessage.length > APP_CONSTANTS.MAX_MESSAGE_LENGTH) {
+      return NextResponse.json({ error: "Invalid request" }, { status: 400 });
+    }
+    const message = sanitizeString(rawMessage, APP_CONSTANTS.MAX_MESSAGE_LENGTH);
+    if (!message) {
+      return NextResponse.json({ error: "Invalid request" }, { status: 400 });
+    }
 
-  // Production: add rate limiting middleware (e.g., Upstash @upstash/ratelimit)
-  try {
+    // Validate context
+    const ctx = body.context as UserContext | undefined;
+    if (!ctx || typeof ctx !== "object" || !ctx.profile || !Array.isArray(ctx.recentActivities)) {
+      return NextResponse.json({ error: "Invalid request" }, { status: 400 });
+    }
+
+    // ── API Key check ──────────────────────────────────────────────────────────
+    const apiKey = process.env.GEMINI_API_KEY;
+    if (!apiKey || apiKey === "your_api_key_here") {
+      return NextResponse.json(NO_KEY_RESPONSE, { status: 200 });
+    }
+
+    // Production: add rate limiting middleware (e.g., Upstash @upstash/ratelimit)
     // ── Step 3: Pre-calculate all numbers deterministically ────────────────
     const now = new Date();
     const weekStart = new Date(now);
@@ -220,7 +254,6 @@ Return exactly 3 actions ranked by estimatedSavingKg descending. Do NOT wrap in 
       systemPrompt + "\n\n" + userContent
     );
 
-
     // ── Step 6: Defensive JSON parsing ────────────────────────────────────
     let rawText = result.response.text().trim();
     // Strip accidental markdown fences
@@ -266,3 +299,4 @@ Return exactly 3 actions ranked by estimatedSavingKg descending. Do NOT wrap in 
     );
   }
 }
+

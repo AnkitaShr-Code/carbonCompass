@@ -1,13 +1,14 @@
 "use client";
 
 import { useState, useEffect, useCallback, useRef } from "react";
+
+import { APP_CONSTANTS } from "../lib/constants";
+import { DAILY_BUDGET_1_5C, EMISSION_FACTORS } from "../lib/emissionFactors";
 import {
   getActivities,
   getProfile,
   getGoals,
   saveGoals,
-  getChatHistory,
-  saveChatHistory,
 } from "../lib/storage";
 import {
   getTotalForPeriod,
@@ -18,7 +19,6 @@ import {
 } from "../lib/carbonUtils";
 import { sanitizeString } from "../lib/sanitize";
 import { InsightResponse, GoalData, ActivityEntry } from "../lib/types";
-import { DAILY_BUDGET_1_5C } from "../lib/emissionFactors";
 
 // ─── Message types ────────────────────────────────────────────────────────────
 
@@ -163,18 +163,23 @@ function loadMessages(): AssistantMessage[] {
 function persistMessages(msgs: AssistantMessage[]) {
   if (typeof window === "undefined") return;
   try {
-    // Only persist last 40 messages to avoid bloat
-    localStorage.setItem(MESSAGES_KEY, JSON.stringify(msgs.slice(-40)));
+    // Only persist last N messages to avoid bloat
+    localStorage.setItem(MESSAGES_KEY, JSON.stringify(msgs.slice(-APP_CONSTANTS.MAX_PERSISTED_MESSAGES)));
   } catch {}
 }
 
 // ─── Hook ─────────────────────────────────────────────────────────────────────
 
 /**
- * Hook to manage AI assistant state and interactions, including chat history,
- * context building, and API calls to the Insights endpoint.
- *
- * @returns State and functions to interact with the AI assistant.
+ * @description Custom hook to manage AI assistant coach messages state, chat history, and request insights.
+ * 
+ * State managed:
+ * - messages: Current chat log array.
+ * - isLoading: Whether a request to get insights is currently in flight.
+ * - error: Any user-facing error message.
+ * - goals: Current commitment status and goals metadata.
+ * 
+ * @returns Object containing assistant state variables and trigger methods (sendMessage, runWhatIf, commitAction, etc.).
  */
 export function useAssistant() {
   const [messages, setMessages] = useState<AssistantMessage[]>([]);
@@ -191,7 +196,7 @@ export function useAssistant() {
     // Simple streak: count consecutive days backward from today
     let s = 0;
     const now = new Date();
-    for (let i = 0; i < 30; i++) {
+    for (let i = 0; i < APP_CONSTANTS.STREAK_LOOKBACK_DAYS; i++) {
       const day = new Date(now);
       day.setDate(now.getDate() - i);
       day.setHours(0, 0, 0, 0);
@@ -233,7 +238,7 @@ export function useAssistant() {
   // ── Send a regular AI message ──────────────────────────────────────────────
   const sendMessage = useCallback(
     async (text: string, hidden = false) => {
-      const sanitized = sanitizeString(text, 500);
+      const sanitized = sanitizeString(text, APP_CONSTANTS.MAX_MESSAGE_LENGTH);
       if (!sanitized) return;
 
       setError(null);
@@ -286,11 +291,7 @@ export function useAssistant() {
         });
       } catch (err: unknown) {
         console.error("Insights fetch error:", err);
-        setError(
-          err instanceof Error
-            ? err.message
-            : "Network error — please check your connection and try again."
-        );
+        setError("We encountered an issue getting AI suggestions. Please try again later.");
       } finally {
         setIsLoading(false);
       }
@@ -323,7 +324,9 @@ export function useAssistant() {
           .reduce((s, a) => s + a.quantity, 0);
         hasData = carKm > 0;
         if (hasData) {
-          savingKgPerWeek = parseFloat(((0.21 - 0.089) * carKm).toFixed(2));
+          savingKgPerWeek = parseFloat(
+            ((EMISSION_FACTORS.transport.car_petrol.factor - EMISSION_FACTORS.transport.bus.factor) * carKm).toFixed(2)
+          );
         }
       } else if (config.id === "legumes") {
         const beefKg = recentActivities
@@ -331,7 +334,9 @@ export function useAssistant() {
           .reduce((s, a) => s + a.quantity, 0);
         hasData = beefKg > 0;
         if (hasData) {
-          savingKgPerWeek = parseFloat(((27.0 - 0.9) * beefKg).toFixed(2));
+          savingKgPerWeek = parseFloat(
+            ((EMISSION_FACTORS.food.beef.factor - EMISSION_FACTORS.food.legumes.factor) * beefKg).toFixed(2)
+          );
         }
       } else if (config.id === "electricity") {
         const elecSubtypes = [
@@ -347,7 +352,7 @@ export function useAssistant() {
         hasData = elecEntries.length > 0;
         if (hasData) {
           savingKgPerWeek = parseFloat(
-            (elecEntries.reduce((s, a) => s + a.co2e * 0.2, 0)).toFixed(2)
+            (elecEntries.reduce((s, a) => s + a.co2e * APP_CONSTANTS.ELECTRICITY_REDUCTION_RATE, 0)).toFixed(2)
           );
         }
       }
@@ -426,7 +431,7 @@ export function useAssistant() {
         "Analyze my carbon footprint data and give me my top 3 personalized recommendations for this week",
         true
       );
-    }, 100);
+    }, APP_CONSTANTS.AUTO_ANALYZE_DELAY_MS);
   }, [sendMessage]);
 
   return {

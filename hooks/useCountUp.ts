@@ -1,12 +1,22 @@
 import { useState, useRef, useEffect } from "react";
 
+import { APP_CONSTANTS } from "../lib/constants";
+
 /**
- * Hook to animate a number from 0 to a target value.
+ * Custom hook to animate a number from its current/previous value to a new target value.
+ * Uses requestAnimationFrame and a cubic ease-out function for smooth transitions.
+ * 
+ * State managed:
+ * - value: The current animated numeric state displayed to the user.
+ * 
  * @param target - The final target value to animate towards.
- * @param durationMs - The duration of the animation in milliseconds.
- * @returns The current animated value.
+ * @param durationMs - The duration of the animation in milliseconds (defaults to APP_CONSTANTS.ANIMATION_DURATION_MS).
+ * @returns The current animated value state.
  */
-export function useCountUp(target: number, durationMs = 800): number {
+export function useCountUp(
+  target: number,
+  durationMs = APP_CONSTANTS.ANIMATION_DURATION_MS
+): number {
   const [value, setValue] = useState(0);
   const valueRef = useRef(0);
   const rafRef = useRef<number>(0);

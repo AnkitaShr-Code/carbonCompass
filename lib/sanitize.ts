@@ -3,11 +3,10 @@ import { ActivityEntry } from "./types";
 import { APP_CONSTANTS } from "./constants";
 
 /**
- * Strips basic HTML tags, trims, and truncates a string to a max length.
- * 
+ * @description Strips basic HTML tags, trims, and truncates a string to a max length.
  * @param str - The input string.
  * @param maxLen - The maximum allowed length.
- * @returns The sanitized, safe string.
+ * @returns {string} The sanitized, safe string.
  */
 export function sanitizeString(str: string, maxLen: number): string {
   if (typeof str !== "string") return "";
@@ -22,12 +21,11 @@ export function sanitizeString(str: string, maxLen: number): string {
 }
 
 /**
- * Parses and clamps a number between safe boundaries. Returns null if invalid or NaN.
- * 
+ * @description Parses and clamps a number between safe boundaries. Returns null if invalid or NaN.
  * @param val - Unknown number input.
  * @param min - Minimum bound.
  * @param max - Maximum bound.
- * @returns The clamped number value or null.
+ * @returns {number | null} The clamped number value or null.
  */
 export function sanitizeNumber(
   val: unknown,
@@ -45,10 +43,9 @@ export function sanitizeNumber(
 }
 
 /**
- * Validates structural activity entries, cross-referencing keys and coefficients inside EMISSION_FACTORS.
- * 
+ * @description Validates structural activity entries, cross-referencing keys and coefficients inside EMISSION_FACTORS.
  * @param input - Mapped fields to validate.
- * @returns Validation state, error list, and sanitized output.
+ * @returns {{ valid: boolean; errors: string[]; sanitized?: Partial<ActivityEntry> }} Validation state, error list, and sanitized output.
  */
 export function validateActivityInput(input: unknown): {
   valid: boolean;

@@ -1,27 +1,28 @@
 "use client";
 
 import React, { useTransition } from "react";
+import Link from "next/link";
+import {
+  AlertTriangle,
+  ArrowRight,
+  Car,
+  CheckCircle2,
+  ChevronLeft,
+  Compass,
+  Info,
+  Recycle,
+  ShoppingBag,
+  Sparkles,
+  UtensilsCrossed,
+  Zap,
+} from "lucide-react";
+
+import { Button } from "../../components/ui/Button";
+import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "../../components/ui/Card";
 import { useCarbonTracker } from "../../hooks/useCarbonTracker";
-import { EMISSION_FACTORS } from "../../lib/emissionFactors";
 import { getEquivalences } from "../../lib/carbonUtils";
 import { APP_CONSTANTS } from "../../lib/constants";
-import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "../../components/ui/Card";
-import { Button } from "../../components/ui/Button";
-import { 
-  Car, 
-  UtensilsCrossed, 
-  Zap, 
-  ShoppingBag, 
-  Recycle, 
-  ChevronLeft, 
-  AlertTriangle, 
-  CheckCircle2,
-  Compass,
-  ArrowRight,
-  Info,
-  Sparkles
-} from "lucide-react";
-import Link from "next/link";
+import { EMISSION_FACTORS } from "../../lib/emissionFactors";
 
 export default function TrackerPage() {
   const {

@@ -257,10 +257,8 @@ export const DAILY_TIPS: DailyTip[] = [
 ];
 
 /**
- * Returns a DailyTip based on the current day of the year.
- * Deterministic and changes at midnight.
- * 
- * @returns The DailyTip for today.
+ * @description Returns a DailyTip based on the current day of the year.
+ * @returns {DailyTip} The DailyTip for today.
  */
 export function getDailyTip(): DailyTip {
   const now = new Date();

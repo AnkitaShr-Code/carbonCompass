@@ -1,4 +1,4 @@
-import { ActivityEntry, GoalData, UserProfile } from "./types";
+import { ActivityEntry, ChatMessage, GoalData, UserProfile } from "./types";
 
 /**
  * Storage key constants matching spec version namespace v1.
@@ -25,9 +25,9 @@ function isStorageAvailable(): boolean {
 }
 
 /**
- * Safely saves the user's activity entries array.
- * 
+ * @description Safely saves the user's activity entries array.
  * @param entries - Array of logged ActivityEntry.
+ * @returns {void}
  */
 export function saveActivities(entries: ActivityEntry[]): void {
   if (!isStorageAvailable()) return;
@@ -39,10 +39,8 @@ export function saveActivities(entries: ActivityEntry[]): void {
 }
 
 /**
- * Safely retrieves activity entries.
- * Never throws on parse failures or corrupt content.
- * 
- * @returns Array of saved ActivityEntry items, or empty array.
+ * @description Safely retrieves activity entries from local storage.
+ * @returns {ActivityEntry[]} Array of saved ActivityEntry items, or empty array.
  */
 export function getActivities(): ActivityEntry[] {
   if (!isStorageAvailable()) return [];
@@ -57,9 +55,9 @@ export function getActivities(): ActivityEntry[] {
 }
 
 /**
- * Safely saves the user's profile information.
- * 
+ * @description Safely saves the user's profile information.
  * @param profile - UserProfile config structure.
+ * @returns {void}
  */
 export function saveProfile(profile: UserProfile): void {
   if (!isStorageAvailable()) return;
@@ -71,9 +69,8 @@ export function saveProfile(profile: UserProfile): void {
 }
 
 /**
- * Safely retrieves the user's profile.
- * 
- * @returns Saved UserProfile object or null.
+ * @description Safely retrieves the user's profile.
+ * @returns {UserProfile | null} Saved UserProfile object or null.
  */
 export function getProfile(): UserProfile | null {
   if (!isStorageAvailable()) return null;
@@ -88,9 +85,9 @@ export function getProfile(): UserProfile | null {
 }
 
 /**
- * Safely saves the user's goals structure.
- * 
+ * @description Safely saves the user's goals structure.
  * @param goals - Target GoalData metrics.
+ * @returns {void}
  */
 export function saveGoals(goals: GoalData): void {
   if (!isStorageAvailable()) return;
@@ -102,9 +99,8 @@ export function saveGoals(goals: GoalData): void {
 }
 
 /**
- * Safely retrieves goals data.
- * 
- * @returns GoalData or null if not created.
+ * @description Safely retrieves goals data.
+ * @returns {GoalData | null} GoalData or null if not created.
  */
 export function getGoals(): GoalData | null {
   if (!isStorageAvailable()) return null;
@@ -116,14 +112,10 @@ export function getGoals(): GoalData | null {
     console.error("Failed to load or parse goals:", error);
     return null;
   }
-}
-
-import { ChatMessage } from "./types";
-
-/**
- * Safely saves the user's AI coach chat message history.
- * 
+}/**
+ * @description Safely saves the user's AI coach chat message history.
  * @param history - Array of ChatMessage items.
+ * @returns {void}
  */
 export function saveChatHistory(history: ChatMessage[]): void {
   if (!isStorageAvailable()) return;
@@ -135,10 +127,9 @@ export function saveChatHistory(history: ChatMessage[]): void {
 }
 
 /**
- * Safely retrieves chat history.
- * 
+ * @description Safely retrieves chat history.
  * @param fallback - The default fallback chat history.
- * @returns Array of saved ChatMessage items, or fallback.
+ * @returns {ChatMessage[]} Array of saved ChatMessage items, or fallback.
  */
 export function getChatHistory(fallback: ChatMessage[]): ChatMessage[] {
   if (!isStorageAvailable()) return fallback;

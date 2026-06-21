@@ -3,32 +3,33 @@
 import React, { useState, useEffect, useCallback, useMemo } from "react";
 import Link from "next/link";
 import {
-  Sprout,
-  Flame,
-  BusFront,
-  Leaf,
-  TrendingDown,
-  Shield,
-  Target,
-  Clock,
-  TrendingUp,
   AlertTriangle,
-  Sparkles,
+  BusFront,
   CheckCircle2,
+  Clock,
+  Flame,
+  Leaf,
+  Shield,
   ShieldAlert,
+  Sparkles,
+  Sprout,
+  Target,
+  TrendingDown,
+  TrendingUp,
   Trophy,
 } from "lucide-react";
-import {
-  checkBadges,
-  calculateStreak,
-  getWeeklyComparison,
-  BADGES,
-} from "../../lib/badgeUtils";
-import { getActivities, getGoals, saveGoals } from "../../lib/storage";
-import { sanitizeNumber } from "../../lib/sanitize";
-import { DAILY_BUDGET_1_5C } from "../../lib/emissionFactors";
-import { getTotalForPeriod } from "../../lib/carbonUtils";
+
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "../../components/ui/Card";
+import { DAILY_BUDGET_1_5C } from "../../lib/emissionFactors";
+import {
+  BADGES,
+  calculateStreak,
+  checkBadges,
+  getWeeklyComparison,
+} from "../../lib/badgeUtils";
+import { getTotalForPeriod } from "../../lib/carbonUtils";
+import { sanitizeNumber } from "../../lib/sanitize";
+import { getActivities, getGoals, saveGoals } from "../../lib/storage";
 import { BadgeStatus, GoalData } from "../../lib/types";
 
 // ─── Badge icon map ───────────────────────────────────────────────────────────

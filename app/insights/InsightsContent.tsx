@@ -1,24 +1,25 @@
 "use client";
 
-import React, { useCallback, useRef } from "react";
-import { useAssistant } from "../../hooks/useAssistant";
-import { ChatPanel } from "../../components/insights/ChatPanel";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "../../components/ui/Card";
+import React, { useCallback } from "react";
+import Link from "next/link";
 import {
-  getTotalForPeriod,
-  getCompassScore,
-  getEquivalences,
-} from "../../lib/carbonUtils";
-import { getActivities } from "../../lib/storage";
-import { DAILY_BUDGET_1_5C } from "../../lib/emissionFactors";
-import {
+  Award,
+  CheckCircle2,
   Sparkles,
   TrendingDown,
   TrendingUp,
-  CheckCircle2,
-  Award,
 } from "lucide-react";
-import Link from "next/link";
+
+import { ChatPanel } from "../../components/insights/ChatPanel";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "../../components/ui/Card";
+import { useAssistant } from "../../hooks/useAssistant";
+import { DAILY_BUDGET_1_5C } from "../../lib/emissionFactors";
+import { getActivities } from "../../lib/storage";
+import {
+  getCompassScore,
+  getEquivalences,
+  getTotalForPeriod,
+} from "../../lib/carbonUtils";
 
 // ─── Committed Actions checklist ──────────────────────────────────────────────
 

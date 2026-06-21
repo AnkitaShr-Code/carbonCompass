@@ -2,12 +2,11 @@ import { EMISSION_FACTORS, DAILY_BUDGET_1_5C } from "./emissionFactors";
 import { ActivityEntry, CompassScore, PotentialSaving, UserProfile } from "./types";
 
 /**
- * Calculates carbon emissions in kg CO2e for a given category, subtype, and quantity.
- * 
+ * @description Calculates carbon emissions in kg CO2e for a given category, subtype, and quantity.
  * @param category - The main carbon category ('transport', 'food', 'energy', 'shopping', 'waste').
  * @param subtype - The specific emission subtype coefficient identifier.
  * @param quantity - The numerical quantity logged (must be positive).
- * @returns The calculated carbon emissions in kg CO2e.
+ * @returns {number} The calculated carbon emissions in kg CO2e.
  * @throws {Error} If parameters are invalid or if the category/subtype is not found.
  */
 export function calculateCO2e(
@@ -34,10 +33,9 @@ export function calculateCO2e(
 }
 
 /**
- * Maps a UserProfile country to the exact electricity subtype key in EMISSION_FACTORS.
- * 
+ * @description Maps a UserProfile country to the exact electricity subtype key in EMISSION_FACTORS.
  * @param country - The country selected in the UserProfile.
- * @returns The exact key identifier from the energy emission factor config.
+ * @returns {'electricity_in' | 'electricity_uk' | 'electricity_us' | 'electricity_de' | 'electricity_au'} The exact key identifier from the energy emission factor config.
  */
 export function getElectricitySubtype(
   country: 'india' | 'uk' | 'usa' | 'germany' | 'australia'
@@ -60,12 +58,11 @@ export function getElectricitySubtype(
 }
 
 /**
- * Calculates total carbon emissions for a given date range.
- * 
+ * @description Calculates total carbon emissions for a given date range.
  * @param activities - Array of ActivityEntry logged by the user.
  * @param startDate - The starting bounds Date object (inclusive).
  * @param endDate - The ending bounds Date object (inclusive).
- * @returns Total emissions in kg CO2e.
+ * @returns {number} Total emissions in kg CO2e.
  */
 export function getTotalForPeriod(
   activities: ActivityEntry[],
@@ -86,12 +83,11 @@ export function getTotalForPeriod(
 }
 
 /**
- * Returns emission aggregates grouped by category for a specific range.
- * 
+ * @description Returns emission aggregates grouped by category for a specific range.
  * @param activities - Array of logged ActivityEntry.
  * @param startDate - Start bounds Date object.
  * @param endDate - End bounds Date object.
- * @returns An object mapping each category to its total kg CO2e.
+ * @returns {Partial<Record<'transport' | 'food' | 'energy' | 'shopping' | 'waste', number>>} An object mapping each category to its total kg CO2e.
  */
 export function getCategoryBreakdown(
   activities: ActivityEntry[],
@@ -124,10 +120,9 @@ export function getCategoryBreakdown(
 }
 
 /**
- * Translates kg CO2e emissions into standard environmental equivalents.
- * 
+ * @description Translates kg CO2e emissions into standard environmental equivalents.
  * @param totalKg - Carbon footprint weight in kg CO2e.
- * @returns An object containing calculated equivalences.
+ * @returns {{ trees: number; flights: number; beefMeals: number; smartphoneCharges: number }} An object containing calculated equivalences.
  */
 export function getEquivalences(totalKg: number) {
   if (totalKg < 0 || isNaN(totalKg)) {
@@ -143,11 +138,10 @@ export function getEquivalences(totalKg: number) {
 }
 
 /**
- * Computes a streak-adjusted 0-100 scoring rating for the user based on their last 7 days of activities.
- * 
+ * @description Computes a streak-adjusted 0-100 scoring rating for the user based on their last 7 days of activities.
  * @param activities - Array of all logged ActivityEntry.
  * @param streak - Current consecutive logging streak days.
- * @returns A CompassScore object containing rating, direction, and localized label.
+ * @returns {CompassScore} A CompassScore object containing rating, direction, and localized label.
  */
 export function getCompassScore(
   activities: ActivityEntry[],
@@ -211,11 +205,10 @@ export function getCompassScore(
 }
 
 /**
- * Scans the last 7 days of activities and returns up to 5 potential swaps for carbon reduction.
- * 
+ * @description Scans the last 7 days of activities and returns up to 5 potential swaps for carbon reduction.
  * @param profile - User profile config.
  * @param activities - Array of logged ActivityEntry.
- * @returns Array of sorted PotentialSaving details.
+ * @returns {PotentialSaving[]} Array of sorted PotentialSaving details.
  */
 export function getPotentialSavings(
   profile: UserProfile,
